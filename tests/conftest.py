@@ -17,7 +17,8 @@ def mock_executor():
         # But since we patch subprocess.run, it handles it.
         # However, the __init__ calls it immediately.
         # So we might need to be careful.
-        # Actually, since we patch subprocess.run *before* creating GHExecutor, it should capture the version check too.
+        # Actually, since we patch subprocess.run *before* creating GHExecutor,
+        # it should capture the version check too.
 
         executor = GHExecutor(repo="test/repo")
         yield executor, mock_run

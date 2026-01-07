@@ -13,7 +13,9 @@ class UserManager:
         return self.executor.execute(params, parse_json=True)
 
     def get_user_commits(self, username: str, limit: int = 10) -> List[Dict]:
-        """Search commits by user (global search or repo context if specified in executor?)
+        """Search commits by user.
+
+        (global search or repo context if specified in executor?)
         search/commits is global unless repo: is in q.
         """
         q = f"author:{username}"

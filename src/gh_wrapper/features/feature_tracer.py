@@ -34,8 +34,9 @@ class FeatureTracer:
             if gh_org:
                 cmd.extend(["--owner", gh_org])
 
-            # If the user intends to trace across branches, we might want to include the branch name
-            # in the query if it were supported, but strictly adhering to instructions:
+            # If the user intends to trace across branches, we might want to
+            # include the branch name in the query if it were supported, but
+            # strictly adhering to instructions:
             # We iterate and run the search command.
 
             try:
