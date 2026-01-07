@@ -1,6 +1,7 @@
 from ..commands.repository import RepoManager
 from ..core.executor import GHExecutor
 
+
 class RepoContextAnalyzer:
     def __init__(self, executor: GHExecutor):
         self.manager = RepoManager(executor)

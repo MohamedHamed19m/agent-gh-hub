@@ -1,5 +1,6 @@
 import time
-from typing import Dict, Any, Optional
+from typing import Any, Dict, Optional
+
 
 class ResponseCache:
     def __init__(self, ttl: int = 300):

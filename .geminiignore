@@ -1,0 +1,14 @@
+# Ignore the environment and git history
+.venv/
+.git/
+
+# Ignore build artifacts
+dist/
+build/
+
+
+# Ignore documentation assets if they are just images
+docs/images/
+
+# Ignore lock files
+uv.lock
