@@ -3,7 +3,7 @@ from typing import Any, Dict, Optional
 
 
 class ResponseCache:
-    def __init__(self, ttl: int = 300):
+    def __init__(self, ttl: int = 300) -> None:
         self.ttl = ttl
         self._cache: Dict[str, tuple[float, Any]] = {}
 
@@ -16,5 +16,5 @@ class ResponseCache:
                 del self._cache[key]
         return None
 
-    def set(self, key: str, value: Any):
+    def set(self, key: str, value: Any) -> None:
         self._cache[key] = (time.time(), value)

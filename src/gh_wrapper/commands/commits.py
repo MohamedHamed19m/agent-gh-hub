@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional, cast
 
 from ..core.executor import GHExecutor
 
@@ -23,7 +23,10 @@ class CommitsManager:
         if path:
             params.extend(["-F", f"path={path}"])
 
-        return self.executor.execute(params, parse_json=True)
+        result = self.executor.execute(params, parse_json=True)
+        if isinstance(result, list):
+            return cast(List[Dict[str, Any]], result)
+        return []
 
     def search_commits(self, query: str, limit: int = 10) -> List[Dict]:
         """Search commits (using search api)"""
@@ -33,4 +36,7 @@ class CommitsManager:
 
         params = ["api", "search/commits", "-F", f"q={q}", "-F", f"per_page={limit}"]
         result = self.executor.execute(params, parse_json=True)
-        return result.get("items", [])
+
+        if isinstance(result, dict):
+            return cast(List[Dict[str, Any]], result.get("items", []))
+        return []

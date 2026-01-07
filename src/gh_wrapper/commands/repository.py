@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import Any, Dict, List, cast
 
 from ..core.executor import GHExecutor
 from .files import FileManager
@@ -34,4 +34,7 @@ class RepoManager:
             api_path = "repos/:owner/:repo/branches"
 
         params = ["api", api_path, "-F", f"per_page={limit}"]
-        return self.executor.execute(params, parse_json=True)
+        result = self.executor.execute(params, parse_json=True)
+        if isinstance(result, list):
+            return cast(List[Dict[str, Any]], result)
+        return []

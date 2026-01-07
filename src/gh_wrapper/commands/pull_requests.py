@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import Any, Dict, List, cast
 
 from ..core.executor import GHExecutor
 
@@ -19,7 +19,10 @@ class PRManager:
             "--json",
             "number,title,url,author,createdAt,state,headRefName,baseRefName",
         ]
-        return self.executor.execute(cmd, parse_json=True)
+        result = self.executor.execute(cmd, parse_json=True)
+        if isinstance(result, list):
+            return cast(List[Dict[str, Any]], result)
+        return []
 
     def get_pr_content(self, number: int) -> Dict:
         """Get PR details"""
@@ -30,4 +33,7 @@ class PRManager:
             "--json",
             "number,title,body,comments,reviews,files",
         ]
-        return self.executor.execute(cmd, parse_json=True)
+        result = self.executor.execute(cmd, parse_json=True)
+        if isinstance(result, dict):
+            return cast(Dict[str, Any], result)
+        return {}

@@ -1,7 +1,7 @@
 import json
 import os
 import subprocess
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union, cast
 
 from .cache import ResponseCache
 from .exceptions import GHCommandError, GHNotInstalledError
@@ -15,12 +15,12 @@ class GHExecutor:
         repo: Optional[str] = None,
         use_cache: bool = False,
         cache_ttl: int = 300,  # 5 minutes
-    ):
+    ) -> None:
         self.repo = repo
         self.cache = ResponseCache(ttl=cache_ttl) if use_cache else None
         self._verify_gh_installed()
 
-    def _verify_gh_installed(self):
+    def _verify_gh_installed(self) -> None:
         """Check if gh CLI is installed"""
         try:
             subprocess.run(
@@ -69,7 +69,7 @@ class GHExecutor:
         if self.cache:
             cached = self.cache.get(cache_key)
             if cached is not None:
-                return cached
+                return cast(Union[str, Dict[str, Any], List[Any]], cached)
 
         try:
             result = subprocess.run(
@@ -87,10 +87,14 @@ class GHExecutor:
             # Parse JSON if requested
             if parse_json:
                 try:
-                    output = json.loads(output)
+                    output_data = json.loads(output)
+                    # Cache result
+                    if self.cache:
+                        self.cache.set(cache_key, output_data)
+                    return cast(Union[str, Dict[str, Any], List[Any]], output_data)
                 except json.JSONDecodeError as e:
                     if not output:
-                        return {{}}
+                        return {}
                     raise GHCommandError(
                         f"Failed to parse JSON: {e}\nOutput: {output[:100]}..."
                     )
@@ -99,7 +103,7 @@ class GHExecutor:
             if self.cache:
                 self.cache.set(cache_key, output)
 
-            return output
+            return cast(Union[str, Dict[str, Any], List[Any]], output)
 
         except subprocess.CalledProcessError as e:
             raise GHCommandError(f"Command failed: {' '.join(cmd)}\nError: {e.stderr}")

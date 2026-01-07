@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import Any, Dict, List, cast
 
 from ..core.executor import GHExecutor
 
@@ -10,7 +10,10 @@ class UserManager:
     def get_user_activity(self, username: str, limit: int = 10) -> List[Dict]:
         """Get public events for a user"""
         params = ["api", f"users/{username}/events", "-F", f"per_page={limit}"]
-        return self.executor.execute(params, parse_json=True)
+        result = self.executor.execute(params, parse_json=True)
+        if isinstance(result, list):
+            return cast(List[Dict[str, Any]], result)
+        return []
 
     def get_user_commits(self, username: str, limit: int = 10) -> List[Dict]:
         """Search commits by user.
@@ -24,4 +27,7 @@ class UserManager:
 
         params = ["api", "search/commits", "-F", f"q={q}", "-F", f"per_page={limit}"]
         result = self.executor.execute(params, parse_json=True)
-        return result.get("items", [])
+
+        if isinstance(result, dict):
+            return cast(List[Dict[str, Any]], result.get("items", []))
+        return []

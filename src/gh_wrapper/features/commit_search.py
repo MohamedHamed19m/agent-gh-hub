@@ -1,3 +1,5 @@
+from typing import Any, Dict, List
+
 from ..commands.commits import CommitsManager
 from ..core.executor import GHExecutor
 
@@ -6,6 +8,6 @@ class AdvancedCommitSearcher:
     def __init__(self, executor: GHExecutor):
         self.manager = CommitsManager(executor)
 
-    def search_in_current_repo(self, query: str):
+    def search_in_current_repo(self, query: str) -> List[Dict[str, Any]]:
         """Search commits in the current repository"""
         return self.manager.search_commits(query)

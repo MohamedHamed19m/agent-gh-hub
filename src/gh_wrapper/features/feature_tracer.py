@@ -1,5 +1,5 @@
 import os
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 from ..core.executor import GHExecutor
 
@@ -9,7 +9,7 @@ class FeatureTracer:
         self.executor = executor
 
     def trace_code(
-        self, query: str, branches: List[str] = None, limit: int = 10
+        self, query: str, branches: Optional[List[str]] = None, limit: int = 10
     ) -> List[Dict]:
         """Search code for a feature keyword across branches (iterating through them)"""
         results = []
