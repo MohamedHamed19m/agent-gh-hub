@@ -17,6 +17,7 @@ In many **Enterprise environments**, security policies often restrict or disable
 
 ### 🔐 The Enterprise Advantage
 * **SAML/SSO Compatibility:** If you can log in via `gh auth login` in your terminal, this package works. It inherits the browser-based SSO session seamlessly.
+* **No Manual Configuration:** There is no need to manually set `GH_HOST` or `GH_ORG` variables for basic usage; the library automatically inherits the authentication context and host settings from your active `gh` CLI session.
 * **Bypasses Token Restrictions:** Works in environments where creating/using personal tokens is strictly blocked by organization policy.
 * **Zero Credential Management:** No need to store sensitive tokens in `.env` files or CI secrets; it uses the local system's secure credential store.
 * **AI-Native Output:** While the raw CLI returns text, `gh-bridge` parses everything into structured JSON, optimized for LLM context windows and automated agents.
@@ -33,7 +34,8 @@ In many **Enterprise environments**, security policies often restrict or disable
 ## 🚀 Quick Start
 
 ### Prerequisites
-1. [GitHub CLI](https://cli.github.com/) installed and authenticated (`gh auth login`).
+1. [GitHub CLI](https://cli.github.com/) installed and authenticated (`gh auth login`). 
+   > **Tip:** Verify your connection by running `gh auth status`.
 2. [uv](https://github.com/astral-sh/uv) installed.
 
 ### Setup

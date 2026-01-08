@@ -4,7 +4,9 @@
 The `scripts/demo_file_manager.py` script demonstrates the core capabilities of the `FileManager` class. It is designed to be dynamic and works out-of-the-box with any repository.
 
 ### Prerequisites
-- **GitHub CLI:** Installed and authenticated (`gh auth login`).
+- **GitHub CLI:** Installed and authenticated (`gh auth login`). 
+  - **Tip:** Run `gh auth status` to ensure you are logged in to the correct account and host.
+  - **Note:** You do not need to set `GH_HOST` manually; the scripts inherit your active CLI session's configuration automatically.
 - **uv:** Installed for dependency management.
 - **Fancy Extras:** Highly recommended for the rich terminal output.
   ```bash

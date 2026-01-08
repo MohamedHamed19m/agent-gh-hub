@@ -18,7 +18,7 @@
 ## Building and Running
 
 ### Prerequisites
-1.  **GitHub CLI (`gh`):** Must be installed and authenticated (`gh auth login`).
+1.  **GitHub CLI (`gh`):** Must be installed and authenticated (`gh auth login`). Use `gh auth status` to verify. The library automatically uses the host and account from your active CLI session; manual `GH_HOST` configuration is not required for standard usage.
 2.  **uv:** Must be installed.
 
 ### Setup
