@@ -1,12 +1,12 @@
+from gh_wrapper.commands.files import FileManager
 from gh_wrapper.core.executor import GHExecutor
 from gh_wrapper.features.repo_context import RepoContextAnalyzer
-from gh_wrapper.commands.files import FileManager
 
 
 def read_specific_file(repo_name: str, file_path: str) -> None:
     executor = GHExecutor(repo=repo_name, use_cache=True)
     file_manager = FileManager(executor)
-    
+
     print(f"Reading content of {file_path} from {repo_name}...")
     content = file_manager.get_file_content(file_path)
     print("--------------------------------------------------")
@@ -45,7 +45,7 @@ def read_repo_content(repo_name: str) -> None:
             print(f" - {item.get('path')} ({item.get('type')})")
     else:
         print(" No file structure found.")
-    
+
     activity = context.get("activity", {})
     recent_commits = activity.get("recent_commits", [])
     print("Recent Commits:")
@@ -68,9 +68,7 @@ def read_repo_content(repo_name: str) -> None:
     print(readme_snippet)
 
 
-
 if __name__ == "__main__":
     repo_name = "MohamedHamed19m/agent-gh-hub"
     read_repo_content(repo_name)
     read_specific_file(repo_name, "pyproject.toml")
-  

@@ -15,7 +15,7 @@ class RepoManager:
         """Get high level context: readme, active PRs, recent branches"""
         repo_basics = self._get_repo_basics()
         default_branch = repo_basics.get("default_branch", "main")
-        
+
         readme = self.file_manager.get_file_content("README.md", default_branch)
         active_prs = self.pr_manager.list_prs(state="open", limit=5)
 
@@ -23,6 +23,12 @@ class RepoManager:
 
         file_structure = self._get_file_strcture(default_branch)
         recent_commits = self._get_recent_commits(default_branch, limit=5)
+
+        readme_snippet = "No README.md found."
+        if readme:
+            readme_snippet = readme[:3000]
+            if len(readme) > 3000:
+                readme_snippet += "\n...[truncated]"
 
         return {
             "target": self.executor.repo,
@@ -35,12 +41,11 @@ class RepoManager:
                 else [],
             },
             "structure": file_structure,
-            "activity":{
+            "activity": {
                 "recent_commits": recent_commits,
                 "active_pull_requests": active_prs,
             },
-            "readme_snippet": readme[:3000] + ("\n...[truncated]" if len(readme) > 3000 else "")
-            if readme else "No README.md found.",
+            "readme_snippet": readme_snippet,
         }
 
     def list_branches(self, limit: int = 10) -> List[Dict]:
@@ -57,10 +62,11 @@ class RepoManager:
         return []
 
     def _get_repo_basics(self) -> Dict[str, Any]:
+        repo_target = self.executor.repo or ":owner/:repo"
         params = [
             "repo",
             "view",
-            self.executor.repo,
+            repo_target,
             "--json",
             "defaultBranchRef,description,latestRelease",
         ]
@@ -76,7 +82,7 @@ class RepoManager:
                 ),
             }
         return {}
-    
+
     def _get_file_strcture(self, branch: str) -> List[Dict[str, Any]]:
         params = [
             "api",
@@ -94,7 +100,7 @@ class RepoManager:
                     }
                 )
         return strcture
-    
+
     def _get_recent_commits(self, branch: str, limit: int = 5) -> List[Dict[str, Any]]:
         params = [
             "api",
