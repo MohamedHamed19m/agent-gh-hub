@@ -38,9 +38,9 @@ class TestWithKnownBranch:
 
         # Assert expected content
         assert content is not None, "File content should not be None"
-        assert (
-            "Hello from test file 1" in content
-        ), f"Expected content not found. Got: {content}"
+        assert "Hello from test file 1" in content, (
+            f"Expected content not found. Got: {content}"
+        )
         print(f"✓ File read successful: {content}")
 
     def test_read_all_test_files(self, executor: GHExecutor) -> None:
@@ -50,9 +50,9 @@ class TestWithKnownBranch:
         for file_path, expected_content in TEST_FILES.items():
             try:
                 content = file_manager.get_file_content(file_path, ref=TEST_BRANCH)
-                assert (
-                    expected_content in content
-                ), f"File {file_path}: expected '{expected_content}' not found"
+                assert expected_content in content, (
+                    f"File {file_path}: expected '{expected_content}' not found"
+                )
                 print(f"✓ {file_path}: Content verified")
             except Exception as e:
                 print(f"✗ {file_path}: {e}")
@@ -86,9 +86,9 @@ class TestWithKnownBranch:
 
         # Check for at least some of our test files
         for test_file in TEST_FILES.keys():
-            assert (
-                test_file in found_files
-            ), f"Test file '{test_file}' not found in structure. Found: {found_files}"
+            assert test_file in found_files, (
+                f"Test file '{test_file}' not found in structure. Found: {found_files}"
+            )
             print(f"✓ Found test file in structure: {test_file}")
 
     def test_commit_history_on_test_branch(self, executor: GHExecutor) -> None:
@@ -143,9 +143,9 @@ class TestExpectedValues:
         content_clean = content.lstrip("\ufeff").strip()
         expected = TEST_FILES["test-file-1.txt"].strip()
 
-        assert (
-            content_clean == expected
-        ), f"Expected:\n{expected}\n\nGot:\n{content_clean}"
+        assert content_clean == expected, (
+            f"Expected:\n{expected}\n\nGot:\n{content_clean}"
+        )
 
     def test_python_file_is_valid_python(self, executor: GHExecutor) -> None:
         """Verify test Python file is syntactically valid."""
