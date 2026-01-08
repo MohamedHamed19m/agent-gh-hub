@@ -2,6 +2,7 @@ from gh_wrapper.commands.commits import CommitsManager
 from gh_wrapper.commands.files import FileManager
 from gh_wrapper.core.executor import GHExecutor
 from gh_wrapper.features.repo_context import RepoContextAnalyzer
+from gh_wrapper.features.user_tracer import UserTracer
 
 
 def read_specific_file(repo_name: str, file_path: str) -> None:
@@ -97,8 +98,38 @@ def get_commit_details_from_repo(repo_name: str, sha: str) -> None:
         print(f"No details found for commit {sha}.")
 
 
+def trace_user_activity(username: str, repo_name: str, limit: int = 10) -> None:
+    try:
+        executor = GHExecutor(repo=repo_name, use_cache=True)
+        user_tracer = UserTracer(executor)
+        recent_work = user_tracer.trace_recent_work(username, repo_name, limit)
+
+        print(
+            f"\nRecent work traced for user '{username}' in repository '{repo_name}':"
+        )
+
+        if recent_work:
+            for commit in recent_work:
+                prefix = "" if commit.get("priority") else " "
+                display_date = (
+                    commit.get("date", "")[:10]
+                    if commit.get("date")
+                    else "unknown date"
+                )
+                print(
+                    f"{prefix} - [{commit.get('sha')}] {commit.get('message')} by {commit.get('short_name')} on {display_date} (branch: {commit.get('branch')})"
+                )
+        else:
+            print(
+                f"No recent work found for user '{username}' in repository '{repo_name}'."
+            )
+    except Exception as e:
+        print(f"Error tracing user activity: {e}")
+
+
 if __name__ == "__main__":
     repo_name = "MohamedHamed19m/agent-gh-hub"
     # read_repo_content(repo_name)
     # read_specific_file(repo_name, "pyproject.toml")
-    get_commit_details_from_repo(repo_name, "main")
+    # get_commit_details_from_repo(repo_name, "main")
+    trace_user_activity("MohamedHamed19m", repo_name, limit=10)

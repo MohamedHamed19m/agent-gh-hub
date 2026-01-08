@@ -2,10 +2,12 @@
 
 A robust, Pythonic wrapper around the **GitHub CLI (`gh`)**, engineered specifically for **AI Agents** (like Claude, Gemini, and GPT) and high-automation environments.
 
-[![CI/CD](https://github.com/MohamedHamed19m/gh-bridge/actions/workflows/test.yml/badge.svg)](https://github.com/MohamedHamed19m/gh-bridge/actions)
+[![Tests](https://github.com/MohamedHamed19m/agent-gh-hub/actions/workflows/test.yml/badge.svg)](https://github.com/MohamedHamed19m/agent-gh-hub/actions/workflows/test.yml)
+
 [![Python Version](https://img.shields.io/badge/python-3.10%2B-blue)](https://python.org)
 [![Managed by uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
 
+![gh-bridge Architecture](docs/package_image.png)
 ## 🎯 Why gh-bridge?
 
 While libraries like `PyGithub` or `ghapi` exist, `gh-bridge` leverages the **GitHub CLI** to handle complex Enterprise SSO, local credential caching, and advanced search features that are cumbersome via raw REST APIs. It outputs **AI-optimized JSON**, making it the perfect "eyes and ears" for your coding agents.
