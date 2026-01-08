@@ -12,6 +12,7 @@ While libraries like `PyGithub` or `ghapi` exist, `gh-bridge` leverages the **Gi
 
 ## 🛠️ Key Features
 
+* **📊 Branch Analytics:** Analyze commit activity, contributors, and branch health metrics (`gh_wrapper.features.branch_analytics`).
 * **🔍 Feature Tracer:** Search for logic or snippets across multiple repositories and branches (`gh_wrapper.features.feature_tracer`).
 * **👤 User Activity Analytics:** Trace a developer's recent work to understand intent and progress (`gh_wrapper.features.user_tracer`).
 * **📂 Repo Contextualizer:** One-call "Big Picture" view (Files, PRs, Branches, and README) for LLM context windows (`gh_wrapper.features.repo_context`).
@@ -59,6 +60,18 @@ from gh_wrapper.features.feature_tracer import FeatureTracer
 tracer = FeatureTracer(executor)
 # Search for 'auth' logic across main and develop branches
 results = tracer.trace_code("auth", branches=["main", "develop"])
+```
+
+**Branch Activity Analytics:**
+```python
+from gh_wrapper.features.branch_analytics import BranchAnalyzer
+
+analyzer = BranchAnalyzer(executor)
+stats = analyzer.analyze_branch("main")
+
+print(f"Branch: {stats.branch}")
+print(f"Total Commits: {stats.total_commits}")
+print(f"Top Contributor: {max(stats.contributors, key=stats.contributors.get)}")
 ```
 
 **Running the Demo:**

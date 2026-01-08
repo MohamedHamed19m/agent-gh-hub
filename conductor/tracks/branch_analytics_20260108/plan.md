@@ -8,7 +8,7 @@
     -   *Context:* Use `GHExecutor` to fetch commits (`gh api` or `gh search`). Calculate metrics.
     -   *Workflow:* Mock `GHExecutor.run`. Verify parsing logic. Coverage > 80%.
 - [x] Task: Conductor - User Manual Verification 'Core Implementation & Unit Tests' (Protocol in workflow.md)
-    -   *Checkpoint:* `0093856bd1c19eff67939f5ead7b5907254f1510`
+    -   *Checkpoint:* `8fec8a33202ae9ca4dcafa46a2b80c277b1a0c34`
 
 ## Phase 2: Integration & Polish
 - [ ] Task: Write Integration Tests for `BranchAnalytics`.
