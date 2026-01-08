@@ -8,9 +8,18 @@ A robust, Pythonic wrapper around the **GitHub CLI (`gh`)**, engineered specific
 [![Managed by uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
 
 ![gh-bridge Architecture](docs/package_image.png)
+
 ## 🎯 Why gh-bridge?
 
-While libraries like `PyGithub` or `ghapi` exist, `gh-bridge` leverages the **GitHub CLI** to handle complex Enterprise SSO, local credential caching, and advanced search features that are cumbersome via raw REST APIs. It outputs **AI-optimized JSON**, making it the perfect "eyes and ears" for your coding agents.
+In many **Enterprise environments**, security policies often restrict or disable the use of Personal Access Tokens (both Classic and Fine-grained). This creates a "token wall" where traditional libraries like `PyGithub` or `ghapi` fail because they cannot navigate SAML/SSO requirements.
+
+`gh-bridge` solves this by acting as a **Pythonic wrapper for the GitHub CLI (`gh`)**. Instead of fighting with API tokens, it leverages your existing CLI authentication state.
+
+### 🔐 The Enterprise Advantage
+* **SAML/SSO Compatibility:** If you can log in via `gh auth login` in your terminal, this package works. It inherits the browser-based SSO session seamlessly.
+* **Bypasses Token Restrictions:** Works in environments where creating/using personal tokens is strictly blocked by organization policy.
+* **Zero Credential Management:** No need to store sensitive tokens in `.env` files or CI secrets; it uses the local system's secure credential store.
+* **AI-Native Output:** While the raw CLI returns text, `gh-bridge` parses everything into structured JSON, optimized for LLM context windows and automated agents.
 
 ## 🛠️ Key Features
 

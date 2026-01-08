@@ -1,7 +1,7 @@
 # Development Workflow
 
 ## Overview
-This workflow is designed for the `gh-bridge` library, prioritizing robust testing, high code coverage, and a clean release process suitable for a Python package.
+This workflow is designed for the `gh-wrapper` library, prioritizing robust testing, high code coverage, and a clean release process suitable for a Python package.
 
 ## Core Principles
 1.  **Test-Driven Development (TDD):** Write tests before implementation whenever possible.
