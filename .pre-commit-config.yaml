@@ -13,7 +13,6 @@ repos:
     rev: v1.19.1
     hooks:
       - id: mypy
-        always_run: true
         files: ^src/|^tests/
         args: ["--explicit-package-bases"]
         additional_dependencies:
