@@ -15,7 +15,7 @@ dev = [
     "pytest>=7.4.0",
     "pytest-cov>=4.1.0",
     "pytest-mock>=3.11.0",
-    "ruff>=0.8.0",
+    "ruff>=0.14.10",
     "mypy>=1.5.0",
     "pre-commit>=3.5.0",
     "faker>=20.0.0",
@@ -52,6 +52,8 @@ ignore = []
 quote-style = "double"
 indent-style = "space"
 
+[tool.uv.scripts]
+clean = "python -c \"import shutil, pathlib; [shutil.rmtree(p) for p in pathlib.Path('.').rglob('*_cache') if p.is_dir()]; [shutil.rmtree(p) for p in pathlib.Path('.').rglob('__pycache__') if p.is_dir()]\""
 
 [tool.mypy]
 mypy_path = "src"
