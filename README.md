@@ -52,7 +52,9 @@ analyzer = RepoContextAnalyzer(executor)
 context = analyzer.analyze_current_context()
 
 print(f"Repository: {context.get('target')}")
+print(f"Default Branch: {context.get('metadata', {}).get('default_branch')}")
 print(f"Files found: {len(context.get('structure', []))}")
+print(f"Recent Commits: {len(context.get('activity', {}).get('recent_commits', []))}")
 ```
 
 **Tracing Code Features:**
@@ -74,6 +76,18 @@ stats = analyzer.analyze_branch("main")
 print(f"Branch: {stats.branch}")
 print(f"Total Commits: {stats.total_commits}")
 print(f"Top Contributor: {max(stats.contributors, key=stats.contributors.get)}")
+```
+
+**User Activity Analytics:**
+```python
+from gh_wrapper.features.user_tracer import UserTracer
+
+tracer = UserTracer(executor)
+# Trace recent work for a user within a specific repository
+recent_work = tracer.trace_recent_work("MohamedHamed19m", "owner/repo")
+
+for commit in recent_work:
+    print(f"- {commit['sha']}: {commit['message']} ({commit['branch']})")
 ```
 
 **Reading File Content:**
