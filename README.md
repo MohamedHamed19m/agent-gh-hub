@@ -40,17 +40,17 @@ uv sync --all-extras
 **Basic Repository Context:**
 ```python
 from gh_wrapper.core.executor import GHExecutor
-from gh_wrapper.features.repo_context import RepoContextGatherer
+from gh_wrapper.features.repo_context import RepoContextAnalyzer
 
 # Initialize executor with target repository
 executor = GHExecutor(repo="owner/repo")
 
 # Gather high-level context
-gatherer = RepoContextGatherer(executor)
-context = gatherer.get_context()
+analyzer = RepoContextAnalyzer(executor)
+context = analyzer.analyze_current_context()
 
-print(f"Repository: {context.summary['name']}")
-print(f"Files found: {len(context.structure)}")
+print(f"Repository: {context.get('target')}")
+print(f"Files found: {len(context.get('structure', []))}")
 ```
 
 **Tracing Code Features:**
@@ -72,6 +72,15 @@ stats = analyzer.analyze_branch("main")
 print(f"Branch: {stats.branch}")
 print(f"Total Commits: {stats.total_commits}")
 print(f"Top Contributor: {max(stats.contributors, key=stats.contributors.get)}")
+```
+
+**Reading File Content:**
+```python
+from gh_wrapper.commands.files import FileManager
+
+file_manager = FileManager(executor)
+content = file_manager.get_file_content("pyproject.toml")
+print(content)
 ```
 
 **Running the Demo:**

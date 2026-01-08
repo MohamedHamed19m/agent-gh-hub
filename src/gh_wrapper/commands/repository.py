@@ -13,18 +13,34 @@ class RepoManager:
 
     def get_context(self) -> Dict:
         """Get high level context: readme, active PRs, recent branches"""
-        readme = self.file_manager.get_file_content("README.md")
-
+        repo_basics = self._get_repo_basics()
+        default_branch = repo_basics.get("default_branch", "main")
+        
+        readme = self.file_manager.get_file_content("README.md", default_branch)
         active_prs = self.pr_manager.list_prs(state="open", limit=5)
 
         branches = self.list_branches(limit=10)
 
+        file_structure = self._get_file_strcture(default_branch)
+        recent_commits = self._get_recent_commits(default_branch, limit=5)
+
         return {
-            "readme_preview": readme[:500] + "..." if len(readme) > 500 else readme,
-            "active_prs": active_prs,
-            "branches": [b.get("name") for b in branches]
-            if isinstance(branches, list)
-            else [],
+            "target": self.executor.repo,
+            "metadata": {
+                "default_branch": default_branch,
+                "description": repo_basics.get("description"),
+                "latest_release": repo_basics.get("latest_release"),
+                "active_branches": [branch.get("name") for branch in branches]
+                if isinstance(branches, list)
+                else [],
+            },
+            "structure": file_structure,
+            "activity":{
+                "recent_commits": recent_commits,
+                "active_pull_requests": active_prs,
+            },
+            "readme_snippet": readme[:3000] + ("\n...[truncated]" if len(readme) > 3000 else "")
+            if readme else "No README.md found.",
         }
 
     def list_branches(self, limit: int = 10) -> List[Dict]:
@@ -33,8 +49,67 @@ class RepoManager:
         else:
             api_path = "repos/:owner/:repo/branches"
 
-        params = ["api", api_path, "-F", f"per_page={limit}"]
+        # params = ["api", api_path, "-F", f"per_page={limit}"]
+        params = ["api", f"{api_path}?per_page={limit}"]
         result = self.executor.execute(params, parse_json=True)
         if isinstance(result, list):
             return cast(List[Dict[str, Any]], result)
         return []
+
+    def _get_repo_basics(self) -> Dict[str, Any]:
+        params = [
+            "repo",
+            "view",
+            self.executor.repo,
+            "--json",
+            "defaultBranchRef,description,latestRelease",
+        ]
+        result = self.executor.execute(params, parse_json=True)
+        if isinstance(result, dict):
+            return {
+                "default_branch": (result.get("defaultBranchRef") or {}).get(
+                    "name", "main"
+                ),
+                "description": result.get("description"),
+                "latest_release": (result.get("latestRelease") or {}).get(
+                    "tagName", "None"
+                ),
+            }
+        return {}
+    
+    def _get_file_strcture(self, branch: str) -> List[Dict[str, Any]]:
+        params = [
+            "api",
+            f"repos/{self.executor.repo}/contents?ref={branch}",
+        ]
+        result = self.executor.execute(params, parse_json=True)
+        strcture = []
+        if isinstance(result, list):
+            for item in result:
+                strcture.append(
+                    {
+                        "name": item.get("name"),
+                        "path": item.get("path"),
+                        "type": item.get("type"),
+                    }
+                )
+        return strcture
+    
+    def _get_recent_commits(self, branch: str, limit: int = 5) -> List[Dict[str, Any]]:
+        params = [
+            "api",
+            f"repos/{self.executor.repo}/commits?sha={branch}&per_page={limit}",
+        ]
+        result = self.executor.execute(params, parse_json=True)
+        commits = []
+        if isinstance(result, list):
+            for item in result:
+                commits.append(
+                    {
+                        "sha": item.get("sha")[:7] if item.get("sha") else "",
+                        "message": item.get("commit", {}).get("message").split("\n")[0],
+                        "author": item.get("commit", {}).get("author", {}).get("name"),
+                        "date": item.get("commit", {}).get("author", {}).get("date"),
+                    }
+                )
+        return commits
