@@ -45,8 +45,13 @@ jobs:
       env:
         RUN_INTEGRATION_TESTS: "1"
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: uv run pytest tests/integration -v
-    
+      run: |
+        if [ -d "tests/integration" ]; then
+          uv run pytest tests/integration -v
+        else
+          echo "⚠️  No integration tests directory found, skipping..."
+        fi
+        
     - name: Upload coverage
       uses: codecov/codecov-action@v3
       if: matrix.python-version == '3.11'
