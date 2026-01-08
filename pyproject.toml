@@ -15,7 +15,7 @@ dev = [
     "pytest>=7.4.0",
     "pytest-cov>=4.1.0",
     "pytest-mock>=3.11.0",
-    "ruff>=0.1.0",
+    "ruff>=0.8.0",
     "mypy>=1.5.0",
     "pre-commit>=3.5.0",
     "faker>=20.0.0",
@@ -43,8 +43,14 @@ addopts = [
 
 [tool.ruff]
 line-length = 88
+
+[tool.ruff.lint]
 select = ["E", "F", "I", "N", "W"]
 ignore = []
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
 
 
 [tool.mypy]

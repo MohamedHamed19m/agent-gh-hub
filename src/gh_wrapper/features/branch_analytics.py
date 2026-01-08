@@ -36,20 +36,22 @@ class BranchAnalyzer:
 
         total_commits = len(commits)
         contributors: Dict[str, int] = {}
-        
+
         # Last commit is usually the first in the list
         first_commit = commits[0]
         last_commit_info = {
             "sha": first_commit.get("sha"),
             "author": first_commit.get("commit", {}).get("author", {}).get("name"),
-            "date": first_commit.get("commit", {}).get("author", {}).get("date")
+            "date": first_commit.get("commit", {}).get("author", {}).get("date"),
         }
 
         for commit in commits:
-            author_name = commit.get("commit", {}).get("author", {}).get("name", "Unknown")
+            author_name = (
+                commit.get("commit", {}).get("author", {}).get("name", "Unknown")
+            )
             contributors[author_name] = contributors.get(author_name, 0) + 1
 
-        # Simple health score logic: 
+        # Simple health score logic:
         # (Very basic placeholder: More contributors = higher score, capped at 100)
         health_contribution = float(len(contributors)) * 10
         commit_contribution = total_commits / 10

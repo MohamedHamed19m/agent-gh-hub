@@ -1,34 +1,18 @@
 repos:
-  # 1️⃣ Ruff: linting, formatting, type hints
-  - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: v0.0.261  # latest ruff-pre-commit version
+  # 1️⃣ Ruff: linting + formatting + import sorting (all-in-one!)
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.8.4
     hooks:
       - id: ruff
-        args: ["--fix"]  # automatically fix fixable issues
-        additional_dependencies:
-          - ruff==0.0.261  # ensure version matches
+        args: [--fix]
+      - id: ruff-format
 
   # 2️⃣ Mypy: static type checking
   - repo: https://github.com/pre-commit/mirrors-mypy
     rev: v1.19.1
     hooks:
       - id: mypy
-        always_run: true
         files: ^src/|^tests/
         args: ["--explicit-package-bases"]
         additional_dependencies:
           - types-requests
-
-  # 3️⃣ Black: code formatting
-  - repo: https://github.com/psf/black
-    rev: 23.7.0
-    hooks:
-      - id: black
-        language_version: python3  
-
-  # 4️⃣ Isort: optional import sorting
-  - repo: https://github.com/pre-commit/mirrors-isort
-    rev: v5.10.1
-    hooks:
-      - id: isort
-        args: ["--profile", "black"]

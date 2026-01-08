@@ -1,13 +1,14 @@
 # Plan: Branch Analytics Feature
 
 ## Phase 1: Core Implementation & Unit Tests
-- [ ] Task: Create `BranchAnalyzer` class structure and Pydantic models in `src/gh_wrapper/features/branch_analytics.py`.
+- [x] Task: Create `BranchAnalyzer` class structure and Pydantic models in `src/gh_wrapper/features/branch_analytics.py`.
     -   *Context:* Define `BranchStats` model.
     -   *Workflow:* TDD - Write `tests/unit/features/test_branch_analytics.py` skeleton first.
-- [ ] Task: Implement `analyze_branch` logic with unit tests.
+- [x] Task: Implement `analyze_branch` logic with unit tests.
     -   *Context:* Use `GHExecutor` to fetch commits (`gh api` or `gh search`). Calculate metrics.
     -   *Workflow:* Mock `GHExecutor.run`. Verify parsing logic. Coverage > 80%.
-- [ ] Task: Conductor - User Manual Verification 'Core Implementation & Unit Tests' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Core Implementation & Unit Tests' (Protocol in workflow.md)
+    -   *Checkpoint:* `0093856bd1c19eff67939f5ead7b5907254f1510`
 
 ## Phase 2: Integration & Polish
 - [ ] Task: Write Integration Tests for `BranchAnalytics`.
