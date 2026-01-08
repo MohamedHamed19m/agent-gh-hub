@@ -10,7 +10,7 @@ from gh_wrapper.features.branch_analytics import BranchAnalyzer
 from gh_wrapper.features.feature_tracer import FeatureTracer
 
 
-def main():
+def main() -> None:
     print("Initializing GitHub Wrapper Demo...")
     try:
         # You can change the repo to test different contexts

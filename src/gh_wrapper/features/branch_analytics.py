@@ -41,14 +41,12 @@ class BranchAnalyzer:
         first_commit = commits[0]
         last_commit_info = {
             "sha": first_commit.get("sha"),
-            "author": first_commit.get("commit", {}).get("author", {}).get("name"),
-            "date": first_commit.get("commit", {}).get("author", {}).get("date"),
+            "author": first_commit.get("author"),
+            "date": first_commit.get("date"),
         }
 
         for commit in commits:
-            author_name = (
-                commit.get("commit", {}).get("author", {}).get("name", "Unknown")
-            )
+            author_name = commit.get("author") or "Unknown"
             contributors[author_name] = contributors.get(author_name, 0) + 1
 
         # Simple health score logic:

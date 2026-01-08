@@ -1,6 +1,13 @@
 # --- Python/uv Specific ---
 .venv/
 __pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+.mypy_cache/
+.pytest_cache/
 *.py[cod]
 *$py.class
 .ipynb_checkpoints/

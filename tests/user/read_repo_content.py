@@ -135,7 +135,7 @@ def trace_user_activity(username: str, repo_name: str, limit: int = 10) -> None:
 
 if __name__ == "__main__":
     repo_name = "MohamedHamed19m/agent-gh-hub"
-    read_repo_content(repo_name)
+    # read_repo_content(repo_name)
     # read_specific_file(repo_name, "pyproject.toml")
     # get_commit_details_from_repo(repo_name, "main")
-    # trace_user_activity("MohamedHamed19m", repo_name, limit=10)
+    trace_user_activity("MohamedHamed19m", repo_name, limit=10)
