@@ -11,9 +11,10 @@
     -   *Checkpoint:* `8fec8a33202ae9ca4dcafa46a2b80c277b1a0c34`
 
 ## Phase 2: Integration & Polish
-- [ ] Task: Write Integration Tests for `BranchAnalytics`.
+- [x] Task: Write Integration Tests for `BranchAnalytics`.
     -   *Context:* `tests/integration/test_branch_analytics_integration.py`.
     -   *Workflow:* Use real `GH_TOKEN`. Assert valid fields (not exact values as they change).
-- [ ] Task: Update `README.md` and `scripts/demo_usage.py`.
+- [x] Task: Update `README.md` and `scripts/demo_usage.py`.
     -   *Context:* Add documentation and a live demo example.
-- [ ] Task: Conductor - User Manual Verification 'Integration & Polish' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Integration & Polish' (Protocol in workflow.md)
+    -   *Checkpoint:* `b64ae1a1dcf2cee9916ac21bf7f8d04404d65d45`
