@@ -108,9 +108,18 @@ content = file_manager.get_file_content("pyproject.toml")
 print(content)
 ```
 
-**Running the Demo:**
+### 🎨 Visual Demos
+The project includes several specialized scripts in the `scripts/` directory to demonstrate core features with rich, interactive terminal output. These require the `fancy` extra:
+
 ```bash
-python scripts/demo_usage.py
+# Install with fancy extras for rich output
+uv sync --extra fancy
+
+# Run the demos
+uv run scripts/demo_read_repo_context.py
+uv run scripts/demo_trace_user_activity.py
+uv run scripts/demo_read_commit.py
+uv run scripts/demo_read_file.py
 ```
 
 ## 🏗️ Project Structure
