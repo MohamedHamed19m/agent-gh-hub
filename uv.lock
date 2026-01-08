@@ -195,7 +195,6 @@ dependencies = [
     { name = "click" },
     { name = "pydantic" },
     { name = "python-dateutil" },
-    { name = "rich" },
 ]
 
 [package.optional-dependencies]
@@ -207,6 +206,9 @@ dev = [
     { name = "pytest-cov" },
     { name = "pytest-mock" },
     { name = "ruff" },
+]
+fancy = [
+    { name = "rich" },
 ]
 
 [package.metadata]
@@ -220,10 +222,10 @@ requires-dist = [
     { name = "pytest-cov", marker = "extra == 'dev'", specifier = ">=4.1.0" },
     { name = "pytest-mock", marker = "extra == 'dev'", specifier = ">=3.11.0" },
     { name = "python-dateutil", specifier = ">=2.8.0" },
-    { name = "rich", specifier = ">=13.0.0" },
-    { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.8.0" },
+    { name = "rich", marker = "extra == 'fancy'", specifier = ">=13.0.0" },
+    { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.14.10" },
 ]
-provides-extras = ["dev"]
+provides-extras = ["dev", "fancy"]
 
 [[package]]
 name = "identify"
