@@ -86,10 +86,9 @@ class TestWithKnownBranch:
 
         # Check for at least some of our test files
         for test_file in TEST_FILES.keys():
-            assert test_file in found_files, (
-                f"Test file '{test_file}' not found in structure. "
-                f"Found: {found_files}"
-            )
+            assert (
+                test_file in found_files
+            ), f"Test file '{test_file}' not found in structure. Found: {found_files}"
             print(f"✓ Found test file in structure: {test_file}")
 
     def test_commit_history_on_test_branch(self, executor: GHExecutor) -> None:
@@ -113,7 +112,7 @@ class TestWithKnownBranch:
 
         # Trace activity from a known user
         recent_work = user_tracer.trace_recent_work(
-            username="MohamedHamed19m", repo_name=TEST_REPO, limit=5, branch=TEST_BRANCH
+            username="MohamedHamed19m", repo=TEST_REPO, limit=5, branch=TEST_BRANCH
         )
 
         assert recent_work is not None, "Recent work should not be None"
@@ -140,10 +139,13 @@ class TestExpectedValues:
         file_manager = FileManager(executor)
         content = file_manager.get_file_content("test-file-1.txt", ref=TEST_BRANCH)
 
-        expected = TEST_FILES["test-file-1.txt"]
+        # Handle BOM if present
+        content_clean = content.lstrip("\ufeff").strip()
+        expected = TEST_FILES["test-file-1.txt"].strip()
+
         assert (
-            content.strip() == expected.strip()
-        ), f"Expected:\n{expected}\n\nGot:\n{content}"
+            content_clean == expected
+        ), f"Expected:\n{expected}\n\nGot:\n{content_clean}"
 
     def test_python_file_is_valid_python(self, executor: GHExecutor) -> None:
         """Verify test Python file is syntactically valid."""

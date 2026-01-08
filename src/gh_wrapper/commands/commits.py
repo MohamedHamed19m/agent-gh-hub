@@ -18,14 +18,36 @@ class CommitsManager:
         else:
             api_path = "repos/:owner/:repo/commits"
 
-        params = ["api", api_path, "-F", f"sha={branch}", "-F", f"per_page={limit}"]
+        params = [
+            "api",
+            "--method",
+            "GET",
+            api_path,
+            "-F",
+            f"sha={branch}",
+            "-F",
+            f"per_page={limit}",
+        ]
 
         if path:
             params.extend(["-F", f"path={path}"])
 
         result = self.executor.execute(params, parse_json=True)
         if isinstance(result, list):
-            return cast(List[Dict[str, Any]], result)
+            flattened = []
+            for item in result:
+                commit_obj = item.get("commit", {})
+                author_obj = commit_obj.get("author", {})
+                flattened.append(
+                    {
+                        "sha": item.get("sha"),
+                        "message": commit_obj.get("message", "").split("\n")[0],
+                        "author": author_obj.get("name"),
+                        "date": author_obj.get("date"),
+                        "url": item.get("html_url"),
+                    }
+                )
+            return flattened
         return []
 
     def search_commits(self, query: str, limit: int = 10) -> List[Dict]:
@@ -34,7 +56,16 @@ class CommitsManager:
         if self.executor.repo:
             q += f" repo:{self.executor.repo}"
 
-        params = ["api", "search/commits", "-F", f"q={q}", "-F", f"per_page={limit}"]
+        params = [
+            "api",
+            "--method",
+            "GET",
+            "search/commits",
+            "-F",
+            f"q={q}",
+            "-F",
+            f"per_page={limit}",
+        ]
         result = self.executor.execute(params, parse_json=True)
 
         if isinstance(result, dict):

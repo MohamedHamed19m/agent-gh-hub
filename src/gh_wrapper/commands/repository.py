@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, cast
+from typing import Any, Dict, List, Optional, cast
 
 from ..core.exceptions import GHCommandError
 from ..core.executor import GHExecutor
@@ -12,10 +12,10 @@ class RepoManager:
         self.pr_manager = PRManager(executor)
         self.file_manager = FileManager(executor)
 
-    def get_context(self) -> Dict:
+    def get_context(self, branch: Optional[str] = None) -> Dict:
         """Get high level context: readme, active PRs, recent branches"""
         repo_basics = self._get_repo_basics()
-        default_branch = repo_basics.get("default_branch", "main")
+        default_branch = branch or repo_basics.get("default_branch", "main")
 
         readme = self.file_manager.get_file_content("README.md", default_branch)
         active_prs = self.pr_manager.list_prs(state="open", limit=5)
@@ -87,17 +87,17 @@ class RepoManager:
     def _get_file_strcture(self, branch: str) -> List[Dict[str, Any]]:
         params = [
             "api",
-            f"repos/{self.executor.repo}/contents?ref={branch}",
+            f"repos/{self.executor.repo}/git/trees/{branch}?recursive=1",
         ]
         result = self.executor.execute(params, parse_json=True)
         strcture = []
-        if isinstance(result, list):
-            for item in result:
+        if isinstance(result, dict) and "tree" in result:
+            for item in result["tree"]:
                 strcture.append(
                     {
-                        "name": item.get("name"),
                         "path": item.get("path"),
-                        "type": item.get("type"),
+                        "type": "file" if item.get("type") == "blob" else "dir",
+                        "sha": item.get("sha"),
                     }
                 )
         return strcture

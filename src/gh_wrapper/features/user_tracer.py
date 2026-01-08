@@ -1,5 +1,5 @@
 import concurrent.futures
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 from ..commands.commits import CommitsManager
 from ..commands.repository import RepoManager
@@ -21,6 +21,7 @@ class UserTracer:
         limit: int = 10,
         branch_scan_limit: int = 10,
         commit_depth_per_branch: int = 100,
+        branch: Optional[str] = None,
     ) -> List[Dict]:
         """
         Traces recent work for a user within a given repository by analyzing
@@ -30,7 +31,11 @@ class UserTracer:
         self.executor.repo = repo
 
         # [1]. Get Combined branches
-        target_branches = self.repo_manager.get_combined_branches(branch_scan_limit)
+        if branch:
+            target_branches = [{"name": branch, "is_priority": True}]
+        else:
+            target_branches = self.repo_manager.get_combined_branches(branch_scan_limit)
+
         if not target_branches:
             print("No branches found in the repository.")
             return []
