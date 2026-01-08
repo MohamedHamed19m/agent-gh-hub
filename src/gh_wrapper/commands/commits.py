@@ -40,3 +40,17 @@ class CommitsManager:
         if isinstance(result, dict):
             return cast(List[Dict[str, Any]], result.get("items", []))
         return []
+
+    def get_commit_details(self, sha: str) -> Dict:
+        """Get details of a specific commit by SHA"""
+        if self.executor.repo:
+            api_path = f"repos/{self.executor.repo}/commits/{sha}"
+        else:
+            api_path = f"repos/:owner/:repo/commits/{sha}"
+
+        params = ["api", api_path]
+        result = self.executor.execute(params, parse_json=True)
+
+        if isinstance(result, dict):
+            return cast(Dict[str, Any], result)
+        return {}

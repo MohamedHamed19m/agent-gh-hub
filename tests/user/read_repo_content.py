@@ -1,3 +1,4 @@
+from gh_wrapper.commands.commits import CommitsManager
 from gh_wrapper.commands.files import FileManager
 from gh_wrapper.core.executor import GHExecutor
 from gh_wrapper.features.repo_context import RepoContextAnalyzer
@@ -59,7 +60,7 @@ def read_repo_content(repo_name: str) -> None:
     if open_prs:
         print("Open Pull Requests:")
         for pr in open_prs:
-            print(f" - #{pr.get('number')}: {pr.get('title')}")
+            print(f" -#{pr.get('number')}: {pr.get('title')}")
     else:
         print(" No open pull requests found.")
 
@@ -68,7 +69,36 @@ def read_repo_content(repo_name: str) -> None:
     print(readme_snippet)
 
 
+def get_commit_details_from_repo(repo_name: str, sha: str) -> None:
+    executor = GHExecutor(repo=repo_name, use_cache=True)
+    commits_manager = CommitsManager(executor)
+
+    print(f"Fetching details for commit {sha} in {repo_name}...")
+    commit_details = commits_manager.get_commit_details(sha)
+
+    if commit_details:
+        commit_info = commit_details.get("commit", {})
+        author_info = commit_info.get("author", {})
+        print("Commit Details:")
+        print(f"SHA: {commit_details.get('sha')}")
+        print(f"Author: {author_info.get('name')}")
+        print(f"Date: {author_info.get('date')}")
+        print(f"Message: {commit_info.get('message')}")
+
+        files = commit_details.get("files", [])
+        for file in files:
+            additions = file.get("additions")
+            deletions = file.get("deletions")
+            filename = file.get("filename")
+            print(f" - {filename}: +{additions} -{deletions}")
+            if file.get("patch"):
+                print(f"   Patch:\n{file.get('patch')}\n")
+    else:
+        print(f"No details found for commit {sha}.")
+
+
 if __name__ == "__main__":
     repo_name = "MohamedHamed19m/agent-gh-hub"
-    read_repo_content(repo_name)
-    read_specific_file(repo_name, "pyproject.toml")
+    # read_repo_content(repo_name)
+    # read_specific_file(repo_name, "pyproject.toml")
+    get_commit_details_from_repo(repo_name, "main")
