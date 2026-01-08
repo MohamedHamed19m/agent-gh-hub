@@ -14,9 +14,18 @@ def demo_file_manager_capabilities(repo_name: str) -> None:
     executor = GHExecutor(repo=repo_name, use_cache=True)
     file_manager = FileManager(executor)
 
+    # NEW: Use RepoManager to get the actual default branch
+    from gh_wrapper.commands.repository import RepoManager
+
+    repo_manager = RepoManager(executor)
+
+    with console.status("[bold green]Analyzing repository metadata..."):
+        default_branch = repo_manager.get_default_branch()
+
     console.print(
         Panel(
             f"Repository: [bold cyan]{repo_name}[/]\n"
+            f"Default Branch: [bold magenta]{default_branch}[/]\n"
             "Demonstrating [bold yellow]FileManager[/] capabilities",
             title="📂 FileManager Demo",
             border_style="green",
@@ -25,54 +34,86 @@ def demo_file_manager_capabilities(repo_name: str) -> None:
     )
 
     # 1. Listing files in the root
-    with console.status("[bold green]Listing root directory..."):
-        root_items = file_manager.list_files(path="", ref="main")
+    with console.status(
+        f"[bold green]Listing root directory (ref: {default_branch})..."
+    ):
+        root_items = file_manager.list_files(path="", ref=default_branch)
 
-    if root_items:
-        table = Table(
-            title="Root Directory Content",
-            show_header=True,
-            header_style="bold magenta",
+    if not root_items:
+        console.print("[bold red]Error:[/] Could not list root items.")
+        return
+
+    table = Table(
+        title="Root Directory Content",
+        show_header=True,
+        header_style="bold magenta",
+    )
+    table.add_column("Type", width=10)
+    table.add_column("Path", style="cyan")
+    table.add_column("Size", justify="right")
+
+    first_dir = None
+    first_file = None
+
+    for item in root_items:
+        i_type = item.get("type")
+        i_path = item.get("path")
+
+        if i_type == "dir" and not first_dir:
+            first_dir = i_path
+        # avoid binary-ish files
+        if i_type == "file" and not first_file and i_path != "uv.lock":
+            first_file = i_path
+
+        icon = "📁" if i_type == "dir" else "📄"
+        size = f"{item.get('size')} B" if item.get("size") else "-"
+        table.add_row(f"{icon} {i_type}", i_path, size)
+
+    console.print(table)
+
+    # 2. Listing files in a subdirectory (Dynamic)
+    if first_dir:
+        with console.status(f"[bold green]Listing '{first_dir}' directory..."):
+            dir_items = file_manager.list_files(path=first_dir, ref=default_branch)
+
+        if dir_items:
+            tree = Tree(f"📂 [bold blue]{first_dir}/[/]")
+            for item in dir_items:
+                icon = "📁" if item.get("type") == "dir" else "📄"
+                tree.add(f"{icon} {item.get('name')}")
+
+            console.print(f"\n[bold]Directory Tree View ({first_dir}/):[/]")
+            console.print(tree)
+        else:
+            console.print(
+                "\n[yellow]Note:[/] No subdirectories found in "
+                f"'{first_dir}' to demonstrate tree view."
+            )
+    else:
+        console.print(
+            "\n[yellow]Note:[/] No subdirectories found to demonstrate tree view."
         )
-        table.add_column("Type", width=10)
-        table.add_column("Path", style="cyan")
-        table.add_column("Size", justify="right")
 
-        for item in root_items:
-            icon = "📁" if item.get("type") == "dir" else "📄"
-            size = f"{item.get('size')} B" if item.get("size") else "-"
-            table.add_row(f"{icon} {item.get('type')}", item.get("path"), size)
+    # 3. Reading file content (Dynamic)
+    if first_file:
+        with console.status(f"[bold green]Reading {first_file}..."):
+            content = file_manager.get_file_content(first_file, ref=default_branch)
 
-        console.print(table)
+        if content:
+            console.print(f"\n[bold yellow]Content of {first_file}:[/]")
+            lines = content.splitlines()
+            preview = "\n".join(lines[:15])
+            if len(lines) > 15:
+                preview += "\n..."
 
-    # 2. Listing files in a subdirectory (src/)
-    with console.status("[bold green]Listing 'src' directory..."):
-        src_items = file_manager.list_files(path="src", ref="main")
-
-    if src_items:
-        src_tree = Tree("📂 [bold blue]src/[/]")
-        for item in src_items:
-            icon = "📁" if item.get("type") == "dir" else "📄"
-            src_tree.add(f"{icon} {item.get('name')}")
-
-        console.print("\n[bold]Directory Tree View (src/):[/]")
-        console.print(src_tree)
-
-    # 3. Reading file content
-    target_file = "pyproject.toml"
-    with console.status(f"[bold green]Reading {target_file}..."):
-        content = file_manager.get_file_content(target_file, ref="main")
-
-    if content:
-        console.print(f"\n[bold yellow]Content of {target_file}:[/]")
-        # Limit preview for demo
-        lines = content.splitlines()
-        preview = "\n".join(lines[:15])
-        if len(lines) > 15:
-            preview += "\n..."
-
-        syntax = Syntax(preview, "toml", theme="monokai", line_numbers=True)
-        console.print(Panel(syntax, title=target_file, border_style="blue"))
+            # Auto-detect lexer based on extension
+            ext = first_file.split(".")[-1] if "." in first_file else "txt"
+            syntax = Syntax(preview, ext, theme="monokai", line_numbers=True)
+            console.print(Panel(syntax, title=first_file, border_style="blue"))
+    else:
+        console.print(
+            "\n[yellow]Note:[/] No files found to demonstrate content reading."
+        )
 
     # 4. Reading file from a different reference (if applicable)
     # We'll try to list a directory on a different branch if we knew one,
@@ -82,7 +123,7 @@ def demo_file_manager_capabilities(repo_name: str) -> None:
         "to list files or read content from any branch or tag."
     )
     console.print(
-        "Example: [dim]file_manager.get_file_content('README.md', ref='develop')[/]"
+        "Example: [dim]file_manager.get_file_content('README.md', ref='develop')[/]]"
     )
 
 
