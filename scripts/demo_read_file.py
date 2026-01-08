@@ -10,9 +10,27 @@ from gh_wrapper.core.executor import GHExecutor
 console = Console()
 
 
-def read_specific_file(repo_name: str, file_path: str) -> None:
+def read_specific_file(repo_name: str, file_path: str = "") -> None:
     executor = GHExecutor(repo=repo_name, use_cache=True)
     file_manager = FileManager(executor)
+
+    # NEW: Detect a valid file if none provided
+    if not file_path:
+        from gh_wrapper.commands.repository import RepoManager
+
+        repo_manager = RepoManager(executor)
+        with console.status("[bold green]Detecting a valid file to read..."):
+            default_branch = repo_manager.get_default_branch()
+            root_items = file_manager.list_files(path="", ref=default_branch)
+            # Pick first file that isn't binary-ish
+            for item in root_items:
+                if item.get("type") == "file" and item.get("path") != "uv.lock":
+                    file_path = item.get("path")
+                    break
+
+    if not file_path:
+        console.print("[bold red]Error:[/] No readable files found in the repository.")
+        return
 
     # 1. Use a status spinner to bridge the 'gh' CLI execution time
     with console.status(
@@ -47,5 +65,5 @@ def read_specific_file(repo_name: str, file_path: str) -> None:
 
 if __name__ == "__main__":
     repo_name = "MohamedHamed19m/agent-gh-hub"
-    # Testing with pyproject.toml to show off TOML highlighting
-    read_specific_file(repo_name, "pyproject.toml")
+    # Now dynamic - will pick a file automatically
+    read_specific_file(repo_name)

@@ -9,9 +9,24 @@ from gh_wrapper.core.executor import GHExecutor
 console = Console()
 
 
-def get_commit_details_from_repo(repo_name: str, sha: str) -> None:
+def get_commit_details_from_repo(repo_name: str) -> None:
     executor = GHExecutor(repo=repo_name, use_cache=True)
     commits_manager = CommitsManager(executor)
+
+    # NEW: Use RepoManager to get the actual default branch and its latest commit
+    from gh_wrapper.commands.repository import RepoManager
+
+    repo_manager = RepoManager(executor)
+
+    with console.status("[bold green]Detecting default branch and latest commit..."):
+        default_branch = repo_manager.get_default_branch()
+        recent_commits = repo_manager._get_recent_commits(default_branch, limit=1)
+
+    if not recent_commits:
+        console.print(f"[bold red]Error:[/] No commits found in [white]{repo_name}[/].")
+        return
+
+    sha = recent_commits[0].get("sha")
 
     # 1. Show a spinner while the CLI works
     with console.status(
@@ -77,4 +92,4 @@ def get_commit_details_from_repo(repo_name: str, sha: str) -> None:
 if __name__ == "__main__":
     # You can change these to test your specific Enterprise repo
     repo_name = "MohamedHamed19m/agent-gh-hub"
-    get_commit_details_from_repo(repo_name, "main")
+    get_commit_details_from_repo(repo_name)
