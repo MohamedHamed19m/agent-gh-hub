@@ -29,7 +29,7 @@ def main():
         print(f"Activity (Last 50 commits): {stats.total_commits}")
         print(f"Contributors: {list(stats.contributors.keys())}")
         print(f"Health Score: {stats.health_score:.2f}")
-    except Exception as e:
+    except Exception:
         # If trunk fails (e.g. not cli/cli), try main
         try:
             stats = analyzer.analyze_branch("main", limit=50)

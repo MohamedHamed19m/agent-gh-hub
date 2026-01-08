@@ -116,12 +116,18 @@ def trace_user_activity(username: str, repo_name: str, limit: int = 10) -> None:
                     if commit.get("date")
                     else "unknown date"
                 )
+                sha = commit.get("sha")
+                msg = commit.get("message")
+                short_name = commit.get("short_name")
+                branch = commit.get("branch")
                 print(
-                    f"{prefix} - [{commit.get('sha')}] {commit.get('message')} by {commit.get('short_name')} on {display_date} (branch: {commit.get('branch')})"
+                    f"{prefix} - [{sha}] {msg} by {short_name} "
+                    f"on {display_date} (branch: {branch})"
                 )
         else:
             print(
-                f"No recent work found for user '{username}' in repository '{repo_name}'."
+                f"No recent work found for user '{username}' "
+                f"in repository '{repo_name}'."
             )
     except Exception as e:
         print(f"Error tracing user activity: {e}")

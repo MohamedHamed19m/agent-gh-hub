@@ -1,7 +1,8 @@
-from typing import Dict, List
 import concurrent.futures
-from ..commands.repository import RepoManager
+from typing import Dict, List
+
 from ..commands.commits import CommitsManager
+from ..commands.repository import RepoManager
 from ..commands.users import UserManager
 from ..core.executor import GHExecutor
 
@@ -22,8 +23,9 @@ class UserTracer:
         commit_depth_per_branch: int = 100,
     ) -> List[Dict]:
         """
-        Traces recent work for a user within a given repository by analyzing their recent commits across branches
-        and falling back to global search if needed.
+        Traces recent work for a user within a given repository by analyzing
+        their recent commits across branches and falling back to global
+        search if needed.
         """
         self.executor.repo = repo
 
@@ -41,7 +43,8 @@ class UserTracer:
         # [3]. If no commits found, fallback to global commit search
         if not user_commits:
             print(
-                f"No commits found for user {username} in the repository branches. Falling back to global search."
+                f"No commits found for user {username} in the repository "
+                "branches. Falling back to global search."
             )
             user_commits = self.commits_manager.get_user_commits_global_search(
                 repo, username, limit

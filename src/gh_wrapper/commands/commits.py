@@ -63,9 +63,11 @@ class CommitsManager:
         search_term_lower = user_search_term.lower()
 
         if self.executor.repo:
-            api_path = f"repos/{self.executor.repo}/commits?sha={branch_name}&per_page={limit_per_branch}"
+            base_path = f"repos/{self.executor.repo}/commits"
         else:
-            api_path = f"repos/:owner/:repo/commits?sha={branch_name}&per_page={limit_per_branch}"
+            base_path = "repos/:owner/:repo/commits"
+
+        api_path = f"{base_path}?sha={branch_name}&per_page={limit_per_branch}"
 
         commits = self.executor.execute(["api", api_path], parse_json=True)
 
@@ -107,7 +109,7 @@ class CommitsManager:
                             "date": commit_meta.get("date") if commit_meta else "",
                             "short_name": display_short,
                             "message": commit_obj.get("message", "").split("\n")[0],
-                            # "priority": is_p , is_p comes from branch info, will be added later
+                            # "priority": is_p -> added later
                         }
                     )
         return local_results

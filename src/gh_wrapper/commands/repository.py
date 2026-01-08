@@ -1,8 +1,7 @@
-import json
 from typing import Any, Dict, List, cast
 
-from ..core.executor import GHExecutor
 from ..core.exceptions import GHCommandError
+from ..core.executor import GHExecutor
 from .files import FileManager
 from .pull_requests import PRManager
 
@@ -125,7 +124,7 @@ class RepoManager:
     def get_default_branch(self) -> str:
         """Gets the default branch name for the repository"""
         repo_basics = self._get_repo_basics()
-        return repo_basics.get("default_branch", "main")
+        return str(repo_basics.get("default_branch", "main"))
 
     def get_priority_branches(self, priority_names: List[str]) -> List[Dict]:
         """Gets details of priority branches by their names and returns their SHA"""
@@ -145,7 +144,7 @@ class RepoManager:
                         found_branches.append(
                             {"name": name, "sha": sha, "is_priority": True}
                         )
-            except GHCommandError as e:
+            except GHCommandError:
                 # Log or print the error if needed, but continue to check other branches
                 # print(f"Error fetching branch {name}: {e}")
                 pass
@@ -156,7 +155,11 @@ class RepoManager:
         query = """
         query($owner: String!, $name: String!, $first: Int!) {
           repository(owner: $owner, name: $name) {
-            refs(refPrefix: "refs/heads/", first: $first, orderBy: {field: TAG_COMMIT_DATE, direction: DESC}) {
+            refs(
+              refPrefix: "refs/heads/",
+              first: $first,
+              orderBy: {field: TAG_COMMIT_DATE, direction: DESC}
+            ) {
               nodes {
                 name
                 target {

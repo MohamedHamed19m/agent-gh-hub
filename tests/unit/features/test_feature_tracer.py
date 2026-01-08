@@ -1,10 +1,11 @@
 import os
+from typing import Any
 from unittest.mock import patch
 
 from gh_wrapper.features.feature_tracer import FeatureTracer
 
 
-def test_trace_code_with_branches(mock_executor):
+def test_trace_code_with_branches(mock_executor: Any) -> None:
     executor, mock_run = mock_executor
     mock_run.reset_mock()
     mock_run.return_value.stdout = (
