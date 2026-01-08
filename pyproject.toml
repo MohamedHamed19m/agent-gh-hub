@@ -52,8 +52,6 @@ ignore = []
 quote-style = "double"
 indent-style = "space"
 
-[tool.uv.scripts]
-clean = "python -c \"import shutil, pathlib; [shutil.rmtree(p) for p in pathlib.Path('.').rglob('*_cache') if p.is_dir()]; [shutil.rmtree(p) for p in pathlib.Path('.').rglob('__pycache__') if p.is_dir()]\""
 
 [tool.mypy]
 mypy_path = "src"

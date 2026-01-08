@@ -10,6 +10,8 @@ from .exceptions import GHCommandError, GHNotInstalledError
 class GHExecutor:
     """Enhanced executor for GitHub CLI commands with caching"""
 
+    _gh_installed_cached: bool = False
+
     def __init__(
         self,
         repo: Optional[str] = None,
@@ -21,20 +23,24 @@ class GHExecutor:
         self._verify_gh_installed()
 
     def _verify_gh_installed(self) -> None:
-        """Check if gh CLI is installed"""
+        """Check if gh CLI is installed (with caching)"""
+        if GHExecutor._gh_installed_cached:
+            return
+
         try:
             subprocess.run(
-                ["gh", "--version"], capture_output=True, check=True, timeout=5
+                ["gh", "--version"], capture_output=True, check=True, timeout=15
             )
+            GHExecutor._gh_installed_cached = True
         except (subprocess.CalledProcessError, FileNotFoundError):
             raise GHNotInstalledError(
                 "GitHub CLI not installed. Install from: https://cli.github.com"
             )
         except subprocess.TimeoutExpired:
-            raise GHCommandError("GitHub CLI command timed out")
+            raise GHCommandError("GitHub CLI version check timed out")
 
     def execute(
-        self, command: List[str], parse_json: bool = False, timeout: int = 30
+        self, command: List[str], parse_json: bool = False, timeout: int = 60
     ) -> Union[str, Dict[str, Any], List[Any]]:
         """Execute a gh command and return output"""
         # Build full command
