@@ -2,16 +2,19 @@
 
 A robust, Pythonic wrapper around the **GitHub CLI (`gh`)**, engineered specifically for **AI Agents** (like Claude, Gemini, and GPT) and high-automation environments.
 
-[![CI/CD](https://github.com/MohamedHamed19m/gh-bridge/actions/workflows/test.yml/badge.svg)](https://github.com/MohamedHamed19m/gh-bridge/actions)
+[![Tests](https://github.com/MohamedHamed19m/agent-gh-hub/actions/workflows/test.yml/badge.svg)](https://github.com/MohamedHamed19m/agent-gh-hub/actions/workflows/test.yml)
+
 [![Python Version](https://img.shields.io/badge/python-3.10%2B-blue)](https://python.org)
 [![Managed by uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
 
+![gh-bridge Architecture](docs/package_image.png)
 ## 🎯 Why gh-bridge?
 
 While libraries like `PyGithub` or `ghapi` exist, `gh-bridge` leverages the **GitHub CLI** to handle complex Enterprise SSO, local credential caching, and advanced search features that are cumbersome via raw REST APIs. It outputs **AI-optimized JSON**, making it the perfect "eyes and ears" for your coding agents.
 
 ## 🛠️ Key Features
 
+* **📊 Branch Analytics:** Analyze commit activity, contributors, and branch health metrics (`gh_wrapper.features.branch_analytics`).
 * **🔍 Feature Tracer:** Search for logic or snippets across multiple repositories and branches (`gh_wrapper.features.feature_tracer`).
 * **👤 User Activity Analytics:** Trace a developer's recent work to understand intent and progress (`gh_wrapper.features.user_tracer`).
 * **📂 Repo Contextualizer:** One-call "Big Picture" view (Files, PRs, Branches, and README) for LLM context windows (`gh_wrapper.features.repo_context`).
@@ -39,17 +42,19 @@ uv sync --all-extras
 **Basic Repository Context:**
 ```python
 from gh_wrapper.core.executor import GHExecutor
-from gh_wrapper.features.repo_context import RepoContextGatherer
+from gh_wrapper.features.repo_context import RepoContextAnalyzer
 
 # Initialize executor with target repository
 executor = GHExecutor(repo="owner/repo")
 
 # Gather high-level context
-gatherer = RepoContextGatherer(executor)
-context = gatherer.get_context()
+analyzer = RepoContextAnalyzer(executor)
+context = analyzer.analyze_current_context()
 
-print(f"Repository: {context.summary['name']}")
-print(f"Files found: {len(context.structure)}")
+print(f"Repository: {context.get('target')}")
+print(f"Default Branch: {context.get('metadata', {}).get('default_branch')}")
+print(f"Files found: {len(context.get('structure', []))}")
+print(f"Recent Commits: {len(context.get('activity', {}).get('recent_commits', []))}")
 ```
 
 **Tracing Code Features:**
@@ -59,6 +64,39 @@ from gh_wrapper.features.feature_tracer import FeatureTracer
 tracer = FeatureTracer(executor)
 # Search for 'auth' logic across main and develop branches
 results = tracer.trace_code("auth", branches=["main", "develop"])
+```
+
+**Branch Activity Analytics:**
+```python
+from gh_wrapper.features.branch_analytics import BranchAnalyzer
+
+analyzer = BranchAnalyzer(executor)
+stats = analyzer.analyze_branch("main")
+
+print(f"Branch: {stats.branch}")
+print(f"Total Commits: {stats.total_commits}")
+print(f"Top Contributor: {max(stats.contributors, key=stats.contributors.get)}")
+```
+
+**User Activity Analytics:**
+```python
+from gh_wrapper.features.user_tracer import UserTracer
+
+tracer = UserTracer(executor)
+# Trace recent work for a user within a specific repository
+recent_work = tracer.trace_recent_work("MohamedHamed19m", "owner/repo")
+
+for commit in recent_work:
+    print(f"- {commit['sha']}: {commit['message']} ({commit['branch']})")
+```
+
+**Reading File Content:**
+```python
+from gh_wrapper.commands.files import FileManager
+
+file_manager = FileManager(executor)
+content = file_manager.get_file_content("pyproject.toml")
+print(content)
 ```
 
 **Running the Demo:**

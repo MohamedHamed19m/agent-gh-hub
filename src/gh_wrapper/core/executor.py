@@ -47,22 +47,43 @@ class GHExecutor:
 
         # Only append --repo for non-api commands
         # api commands must handle repo path themselves
-        if self.repo and command[0] != "api" and "--repo" not in command:
-            repo_path = self.repo
-            # Automatic formatting: prepend host/org if missing
-            if "/" not in repo_path:
-                parts = []
-                if gh_host:
-                    parts.append(gh_host)
-                if gh_org:
-                    parts.append(gh_org)
-                parts.append(repo_path)
+        if self.repo and "--repo" not in command:
+            if command[0] == "api":
+                pass
+            elif self.repo in command:
+                pass
+            else:
+                repo_path = self.repo
+                # Automatic formatting: prepend host/org if missing
+                if "/" not in repo_path:
+                    parts = []
+                    if gh_host:
+                        parts.append(gh_host)
+                    if gh_org:
+                        parts.append(gh_org)
+                    parts.append(repo_path)
 
-                # Join with forward slash if we have prefix parts
-                if len(parts) > 1:
-                    repo_path = "/".join(parts)
+                    # Join with forward slash if we have prefix parts
+                    if len(parts) > 1:
+                        repo_path = "/".join(parts)
 
-            cmd.extend(["--repo", repo_path])
+                cmd.extend(["--repo", repo_path])
+        # if self.repo and command[0] != "api" and "--repo" not in command:
+        #     repo_path = self.repo
+        #     # Automatic formatting: prepend host/org if missing
+        #     if "/" not in repo_path:
+        #         parts = []
+        #         if gh_host:
+        #             parts.append(gh_host)
+        #         if gh_org:
+        #             parts.append(gh_org)
+        #         parts.append(repo_path)
+
+        #         # Join with forward slash if we have prefix parts
+        #         if len(parts) > 1:
+        #             repo_path = "/".join(parts)
+
+        #     cmd.extend(["--repo", repo_path])
 
         # Check cache
         cache_key = " ".join(cmd)

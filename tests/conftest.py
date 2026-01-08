@@ -1,3 +1,4 @@
+from typing import Any, Dict
 from unittest.mock import patch
 
 import pytest
@@ -6,7 +7,7 @@ from gh_wrapper.core.executor import GHExecutor
 
 
 @pytest.fixture
-def mock_executor():
+def mock_executor() -> Any:
     """Mock executor for testing without actual gh calls"""
     with patch("subprocess.run") as mock_run:
         # Default mock response
@@ -25,7 +26,7 @@ def mock_executor():
 
 
 @pytest.fixture
-def sample_commit_response():
+def sample_commit_response() -> Dict[str, Any]:
     return {
         "sha": "abc123456789",
         "commit": {"message": "Test commit", "author": {"name": "Test User"}},

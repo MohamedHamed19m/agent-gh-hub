@@ -1,9 +1,12 @@
 import json
+from typing import Any, Dict
 
 from gh_wrapper.commands.commits import CommitsManager
 
 
-def test_list_commits(mock_executor, sample_commit_response):
+def test_list_commits(
+    mock_executor: Any, sample_commit_response: Dict[str, Any]
+) -> None:
     executor, mock_run = mock_executor
     # reset mock to ignore init calls
     mock_run.reset_mock()
@@ -26,7 +29,7 @@ def test_list_commits(mock_executor, sample_commit_response):
     assert any("repos/test/repo/commits" in str(arg) for arg in cmd)
 
 
-def test_search_commits(mock_executor):
+def test_search_commits(mock_executor: Any) -> None:
     executor, mock_run = mock_executor
     mock_run.reset_mock()
 

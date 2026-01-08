@@ -6,6 +6,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "..", "src"))
 
 from gh_wrapper.commands.commits import CommitsManager
 from gh_wrapper.core.executor import GHExecutor
+from gh_wrapper.features.branch_analytics import BranchAnalyzer
 from gh_wrapper.features.feature_tracer import FeatureTracer
 
 
@@ -18,6 +19,25 @@ def main():
     except Exception as e:
         print(f"Error initializing (check if gh is installed and auth): {e}")
         return
+
+    print("\n--- Testing Branch Analytics ---")
+    analyzer = BranchAnalyzer(executor)
+    try:
+        # Use trunk as default for cli/cli
+        stats = analyzer.analyze_branch("trunk", limit=50)
+        print(f"Branch: {stats.branch}")
+        print(f"Activity (Last 50 commits): {stats.total_commits}")
+        print(f"Contributors: {list(stats.contributors.keys())}")
+        print(f"Health Score: {stats.health_score:.2f}")
+    except Exception:
+        # If trunk fails (e.g. not cli/cli), try main
+        try:
+            stats = analyzer.analyze_branch("main", limit=50)
+            print(f"Branch: {stats.branch}")
+            print(f"Activity: {stats.total_commits} commits")
+            print(f"Contributors: {list(stats.contributors.keys())}")
+        except Exception as e2:
+            print(f"Failed to analyze branch: {e2}")
 
     print("\n--- Testing Commits Manager ---")
     commits_mgr = CommitsManager(executor)

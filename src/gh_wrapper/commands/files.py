@@ -16,11 +16,13 @@ class FileManager:
         else:
             api_path = f"repos/:owner/:repo/contents/{path}"
 
-        params = ["api", api_path, "-F", f"ref={ref}"]
+        # params = ["api", api_path, "-F", f"ref={ref}"]
+        params = ["api", f"{api_path}?ref={ref}"]
 
         try:
             data = self.executor.execute(params, parse_json=True)
-        except GHCommandError:
+        except GHCommandError as e:
+            print(f"Error fetching file content: {e}")
             return ""  # Or raise?
 
         if (
@@ -33,8 +35,11 @@ class FileManager:
                     "utf-8", errors="replace"
                 )
                 return content
-            except Exception:
-                return str(data["content"])  # Return raw if decode fails?
+            except Exception as e:
+                print(f"Error decoding file content: {e}")
+                return str(data["content"])
+        else:
+            print(f"file {path} data is not as expected: {data}")
         return ""
 
     def list_files(self, path: str = "", ref: str = "main") -> List[Dict]:
