@@ -10,3 +10,8 @@ This file tracks all major tracks for the project. Each track has its own detail
 ## [x] Track: Implement Core Features
 *Includes: Feature Tracer, User Tracer, Repo Context, and Advanced Commit Search.*
 *Status: All core features implemented in src/gh_wrapper/features/*
+
+---
+
+## [~] Track: Add Repo Analysis feature for repository commit pattern insights.
+*Link: [./conductor/tracks/repo_analysis_20260109/](./conductor/tracks/repo_analysis_20260109/)*
