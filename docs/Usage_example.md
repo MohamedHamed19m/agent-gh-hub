@@ -37,7 +37,6 @@ Unlike static demos, this script is fully context-aware:
 - **Syntax Highlighting:** It detects file extensions to apply the correct syntax highlighting in the terminal.
 
 ## Repo Analysis Feature
-
 Insights into commit patterns, contributor activity, and volume trends across multiple branches.
 
 ### Prerequisites
@@ -51,7 +50,6 @@ uv run scripts/demo_repo_analysis.py
 ```
 
 ## Feature Tracer Feature
-
 Cross-sectional insights into feature development across multiple repositories, including code mentions, commits, and PRs.
 
 ### Prerequisites
@@ -59,39 +57,33 @@ Cross-sectional insights into feature development across multiple repositories, 
 - **gh-wrapper:** Installed and synced.
 
 ### How to Run
-
 Run the demo script to trace a feature keyword across repositories:
-
 ```bash
-
 uv run scripts/demo_feature_tracer.py
-
 ```
 
-
-
 ## User Activity Tracer
-
-
-
 Trace recent work of a specific user within a repository, providing a timeline of their contributions.
 
-
-
 ### Prerequisites
-
 - **GitHub CLI:** Authenticated.
-
 - **gh-wrapper:** Installed and synced.
 
+### How to Run
+Run the demo script to trace user activity:
+```bash
+uv run scripts/demo_trace_user_activity.py
+```
 
+## PR Review Feature
+Automated change summary and review suggestions for Pull Requests, including diff analysis and metrics.
+
+### Prerequisites
+- **GitHub CLI:** Authenticated.
+- **gh-wrapper:** Installed and synced.
 
 ### How to Run
-
-Run the demo script to trace user activity:
-
+Run the demo script to analyze the latest PR in a target repository:
 ```bash
-
-uv run scripts/demo_trace_user_activity.py
-
+uv run scripts/demo_pr_review.py
 ```

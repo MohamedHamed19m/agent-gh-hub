@@ -1,4 +1,4 @@
-﻿# GEMINI.md for gh-bridge Project
+# GEMINI.md for gh-bridge Project
 
 ## Project Overview
 
@@ -37,10 +37,6 @@ uv sync --all-extras
 *   **Running Tests:**
     *   **Unit Tests:** `uv run pytest tests/unit --cov=src/gh_wrapper` (Aim for >80% coverage)
     *   **Integration Tests:** `uv run pytest tests/integration` (Requires `GH_TOKEN` or equivalent authentication)
-*   **Running the Demo Script:**
-    ```bash
-    python scripts/demo_usage.py
-    ```
 *   **Type Checking:**
     ```bash
     uv run mypy .
@@ -55,12 +51,6 @@ uv sync --all-extras
     uv run pre-commit install
     ```
 
-**Note:** The `scripts/setup_dev.sh` script can be used for initial setup:
-```bash
-# Run this script to install uv, sync dependencies, and setup pre-commit hooks
-bash scripts/setup_dev.sh
-```
-
 ## Development Conventions
 
 ### Core Principles
@@ -72,31 +62,74 @@ bash scripts/setup_dev.sh
 ### Style and Formatting
 *   **Line Length:** Maximum 88 characters.
 *   **Indentation:** 4 spaces per level.
-*   **Docstrings:** Use `"""triple double quotes"""` for all public modules, functions, classes, and methods, including `Args:`, `Returns:`, and `Raises:` sections where applicable.
-*   **Type Annotations:** Strongly encouraged for all public APIs, enforced by `mypy` with `disallow_untyped_defs = true`.
-*   **Naming:** `snake_case` for modules, functions, variables; `PascalCase` for classes; `ALL_CAPS_WITH_UNDERSCORES` for constants.
-*   **Imports:** Grouped and ordered: standard library, third-party, own application imports.
+*   **Docstrings:** Use `"""triple double quotes"""` for all public modules, functions, classes, and methods.
+*   **Type Annotations:** Strongly encouraged for all public APIs.
 
 ### Testing Strategy
 *   **Unit Tests:** Mock external dependencies (like `gh` CLI calls) to verify logic in isolation.
-*   **Integration Tests:** Interact with the actual GitHub CLI/API to test end-to-end functionality. These require authentication and are not included in coverage stats.
-
-### Contribution Guidelines
-*   Ensure all Pull Requests pass `ruff` linting and `mypy` type checks.
-*   Follow the established development workflow and testing strategies.
-*   Refer to `conductor/code_styleguides/` for detailed style guidelines.
+*   **Integration Tests:** Interact with the actual GitHub CLI/API to test end-to-end functionality.
 
 ### Feature Design Philosophy
 *   **Compositional Architecture:** New features should leverage existing low-level command wrappers.
 *   **AI-Native Output:** Prioritize structured, machine-readable (JSON) output optimized for AI agents.
-*   **Performance:** Minimize latency; use caching where appropriate.
 
-### Error Handling
-*   Standardized error envelopes with `error` field, status code, and actionable messages.
-*   `GHCommandError` and `GHNotInstalledError` are used for specific CLI-related issues.
+## Project Structure
+
+- **src/gh_wrapper/core/**: Base executor, exceptions, and caching logic.
+- **src/gh_wrapper/commands/**: Low-level GitHub CLI command wrappers.
+- **src/gh_wrapper/models/**: Pydantic data models for structured API responses.
+- **src/gh_wrapper/features/**: High-level features that compose commands and models into insights.
+- **src/gh_wrapper/utils/**: Helper utilities.
+
+## Feature Implementation Example: Repo Analysis
+
+- **Command Layer**: `CommitsManager.list_commits()` fetches raw API data.
+- **Model Layer**: `BranchStats` defines the structured output schema.
+- **Feature Layer**: `BranchAnalyzer` orchestrates the analysis logic (health score, contributors).
+
+### Usage Example
+
+```python
+from gh_wrapper.features.branch_analytics import BranchAnalyzer
+
+analyzer = BranchAnalyzer(executor)
+stats = analyzer.analyze_branch("main")
+print(stats.health_score)
+```
+
+## Feature Implementation Example: Feature Tracer
+
+- **Command Layer**: `FileManager.search_in_files()`, `CommitsManager.list_commits()`, `PRManager.list_prs()`.
+- **Model Layer**: `MultiRepoFeatureTrace` and `FeatureTrace` define the aggregated result schema.
+- **Feature Layer**: `FeatureTracer` orchestrates cross-repo searching and ranking.
+
+### Usage Example
+
+```python
+from gh_wrapper.features.feature_tracer import FeatureTracer
+
+tracer = FeatureTracer(executor)
+report = tracer.trace_code("auth", branches=["main", "develop"])
+```
+
+## Feature Implementation Example: PR Review
+
+- **Command Layer**: `PRManager.get_pr_diff()` fetches raw diff data.
+- **Model Layer**: `PrReviewOutput` defines the structured output schema.
+- **Feature Layer**: `PrReviewAnalyzer` parses diffs and generates summaries.
+
+### Usage Example
+
+```python
+from gh_wrapper.features.pr_review_analyzer import PrReviewAnalyzer
+
+analyzer = PrReviewAnalyzer(pr_manager)
+report = analyzer.analyze_pr(pr_input)
+print(analyzer.format_as_markdown(report))
+```
 
 
-### ðŸ›ï¸ The Design Pattern
+### The Design Pattern
 
 For your `repo_analysis` feature, here is how you should distribute the logic:
 
@@ -106,47 +139,6 @@ For your `repo_analysis` feature, here is how you should distribute the logic:
 | **Feature** | Orchestrating and Logic | Loop through branches ðŸ”„, compare dates ðŸ“…, calculate "staleness" score âš–ï¸ |
 
 
-ðŸŽ¯ The Golden Rule
+- The Golden Rule
 RepoManager (Command Layer): "I fetch raw data from GitHub API"
 RepoAnalyzer (Feature Layer): "I transform that data into insights"
-
-## Project Structure
-
-- **src/gh_wrapper/core/**: Base executor, exceptions, and caching logic.
-- **src/gh_wrapper/commands/**: Low-level GitHub CLI command wrappers (e.g., repository, commits, files).
-- **src/gh_wrapper/models/**: Pydantic data models for structured API responses.
-- **src/gh_wrapper/features/**: High-level features that compose commands and models into insights.
-- **src/gh_wrapper/utils/**: Helper utilities.
-
-## Feature Implementation Example: Repo Analysis
-
-- **Command Layer**: `CommitsManager.get_commits_for_analysis()` fetches raw API data.
-- **Model Layer**: `CommitAnalysisReport` defines the structured output schema.
-- **Feature Layer**: `RepoAnalyzer` orchestrates the analysis logic (daily trends, contributor activity, time patterns).
-
-### Usage Example
-
-```python
-from gh_wrapper.features.repo_analysis import RepoAnalyzer
-
-analyzer = RepoAnalyzer(commits_manager)
-report = analyzer.analyze_commit_patterns(branches=["main"], days_back=30)
-print(analyzer.format_as_markdown(report))
-```
-## Feature Implementation Example: Feature Tracer
-
-- **Command Layer**: FileManager.search_in_files(), CommitsManager.get_commits_for_analysis(), PRManager.list_prs() fetch raw data.
-- **Model Layer**: MultiRepoFeatureTrace and FeatureTrace define the aggregated result schema.
-- **Feature Layer**: FeatureTracer orchestrates cross-repo searching, client-side filtering, and contributor ranking.
-
-### Usage Example
-
-`python
-from gh_wrapper.features.feature_tracer import FeatureTracer
-
-tracer = FeatureTracer()
-report = tracer.trace_feature(keyword=\
-secure
-boot\, repos=[\org/repo1\, \org/repo2\])
-print(tracer.format_as_markdown(report))
-``

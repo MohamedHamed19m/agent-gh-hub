@@ -119,11 +119,12 @@ The project includes several specialized scripts in the `scripts/` directory to 
 uv sync --extra fancy
 
 # Run the demos
-uv run scripts/demo_read_repo_context.py
+uv run scripts/demo_repo_analysis.py
+uv run scripts/demo_feature_tracer.py
 uv run scripts/demo_trace_user_activity.py
 uv run scripts/demo_pr_review.py
-uv run scripts/demo_read_commit.py
-uv run scripts/demo_read_file.py
+uv run scripts/demo_read_repo_context.py
+uv run scripts/demo_file_manager.py
 ```
 
 ## 🏗️ Project Structure
