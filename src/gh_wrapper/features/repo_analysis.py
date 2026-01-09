@@ -15,16 +15,42 @@ logger = logging.getLogger(__name__)
 
 
 class RepoAnalyzer:
-    """Feature layer for repository analysis and insights"""
+    """
+    Feature layer for repository analysis and insights.
+
+    This class orchestrates complex logic by fetching raw commit data via CommitsManager
+    and transforming it into structured insights and human-readable reports.
+
+    Example:
+        >>> analyzer = RepoAnalyzer(commits_manager)
+        >>> report = analyzer.analyze_commit_patterns(["main"], days_back=30)
+        >>> print(analyzer.format_as_markdown(report))
+    """
 
     def __init__(self, commits_manager: CommitsManager):
+        """
+        Initialize the RepoAnalyzer.
+
+        Args:
+            commits_manager: An instance of CommitsManager to fetch commit data.
+        """
         self.commits_manager = commits_manager
 
     def analyze_commit_patterns(
         self, branches: List[str], days_back: int = 30
     ) -> CommitAnalysisReport:
         """
-        Orchestrates commit pattern analysis across multiple branches
+        Orchestrates commit pattern analysis across multiple branches.
+
+        Args:
+            branches: A list of branch names to analyze.
+            days_back: Number of days to look back for commits. Defaults to 30.
+
+        Returns:
+            A CommitAnalysisReport Pydantic model containing the aggregated insights.
+
+        Raises:
+            ValueError: If branches list is empty or days_back is not positive.
         """
         if not branches:
             raise ValueError("At least one branch must be provided.")

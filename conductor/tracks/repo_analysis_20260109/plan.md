@@ -51,17 +51,17 @@
 - [ ] Task: Conductor - User Manual Verification 'Phase 4' (Protocol in workflow.md)
 
 ## Phase 5: Documentation & AI Context
-- [ ] Task: Documentation.
-    - [ ] Sub-task: Add comprehensive docstrings to all public methods.
-    - [ ] Sub-task: Add usage examples in `repo_analysis.py` module docstring.
-    - [ ] Sub-task: Update `docs/Usage_example.md` with RepoAnalyzer section (Prerequisites, How to Run).
-    - [ ] Sub-task: Create `scripts/demo_repo_analysis.py`.
-- [ ] Task: Update AI Context Documentation (`GEMINI.md`).
-    - [ ] Sub-task: Add `models/` directory to "Key Technologies" section.
-    - [ ] Sub-task: Add "Project Structure" section showing `commands/`, `features/`, `models/`, `core/` hierarchy.
-    - [ ] Sub-task: Add "Repo Analysis Feature" section under "Features" (Purpose, Data models, Methods, Testing).
-    - [ ] Sub-task: Update "Feature Design Philosophy" with concrete RepoAnalyzer example showing Command/Feature/Models layers.
-- [ ] Task: Final Verification.
-    - [ ] Sub-task: Run full test suite (`unit` + `integration`).
-    - [ ] Sub-task: Check `mypy` and `ruff`.
+- [x] Task: Documentation.
+    - [x] Sub-task: Add comprehensive docstrings to all public methods.
+    - [x] Sub-task: Add usage examples in `repo_analysis.py` module docstring.
+    - [x] Sub-task: Update `docs/Usage_example.md` with RepoAnalyzer section (Prerequisites, How to Run).
+    - [x] Sub-task: Create `scripts/demo_repo_analysis.py`.
+- [x] Task: Update AI Context Documentation (`GEMINI.md`).
+    - [x] Sub-task: Add `models/` directory to "Key Technologies" section.
+    - [x] Sub-task: Add "Project Structure" section showing `commands/`, `features/`, `models/`, `core/` hierarchy.
+    - [x] Sub-task: Add "Repo Analysis Feature" section under "Features" (Purpose, Data models, Methods, Testing).
+    - [x] Sub-task: Update "Feature Design Philosophy" with concrete RepoAnalyzer example showing Command/Feature/Models layers.
+- [x] Task: Final Verification.
+    - [x] Sub-task: Run full test suite (`unit` + `integration`).
+    - [x] Sub-task: Check `mypy` and `ruff`.
 - [ ] Task: Conductor - User Manual Verification 'Phase 5' (Protocol in workflow.md)
