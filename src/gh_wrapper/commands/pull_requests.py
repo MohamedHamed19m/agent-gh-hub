@@ -37,3 +37,17 @@ class PRManager:
         if isinstance(result, dict):
             return cast(Dict[str, Any], result)
         return {}
+
+    def get_pr_diff(self, pr_number: int, target_branch: str | None = None) -> str:
+        """Get PR diff content in patch format."""
+        cmd = [
+            "pr",
+            "diff",
+            str(pr_number),
+            "--patch",
+        ]
+        if target_branch:
+            cmd.extend(["--base", target_branch])
+
+        result = self.executor.execute(cmd, parse_json=False)
+        return cast(str, result)
