@@ -1,4 +1,4 @@
-# GEMINI.md for gh-bridge Project
+﻿# GEMINI.md for gh-bridge Project
 
 ## Project Overview
 
@@ -96,17 +96,17 @@ bash scripts/setup_dev.sh
 *   `GHCommandError` and `GHNotInstalledError` are used for specific CLI-related issues.
 
 
-### 🏛️ The Design Pattern
+### ðŸ›ï¸ The Design Pattern
 
 For your `repo_analysis` feature, here is how you should distribute the logic:
 
 | Layer | Responsibility | Example Logic |
 | :--- | :--- | :--- |
 | **Command** | Fetching raw data from GitHub | `list_branches()`, `get_commit_history()` |
-| **Feature** | Orchestrating and Logic | Loop through branches 🔄, compare dates 📅, calculate "staleness" score ⚖️ |
+| **Feature** | Orchestrating and Logic | Loop through branches ðŸ”„, compare dates ðŸ“…, calculate "staleness" score âš–ï¸ |
 
 
-🎯 The Golden Rule
+ðŸŽ¯ The Golden Rule
 RepoManager (Command Layer): "I fetch raw data from GitHub API"
 RepoAnalyzer (Feature Layer): "I transform that data into insights"
 
@@ -133,3 +133,20 @@ analyzer = RepoAnalyzer(commits_manager)
 report = analyzer.analyze_commit_patterns(branches=["main"], days_back=30)
 print(analyzer.format_as_markdown(report))
 ```
+## Feature Implementation Example: Feature Tracer
+
+- **Command Layer**: FileManager.search_in_files(), CommitsManager.get_commits_for_analysis(), PRManager.list_prs() fetch raw data.
+- **Model Layer**: MultiRepoFeatureTrace and FeatureTrace define the aggregated result schema.
+- **Feature Layer**: FeatureTracer orchestrates cross-repo searching, client-side filtering, and contributor ranking.
+
+### Usage Example
+
+`python
+from gh_wrapper.features.feature_tracer import FeatureTracer
+
+tracer = FeatureTracer()
+report = tracer.trace_feature(keyword=\
+secure
+boot\, repos=[\org/repo1\, \org/repo2\])
+print(tracer.format_as_markdown(report))
+``
