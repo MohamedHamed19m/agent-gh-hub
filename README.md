@@ -26,6 +26,7 @@ In many **Enterprise environments**, security policies often restrict or disable
 
 * **📊 Branch Analytics:** Analyze commit activity, contributors, and branch health metrics (`gh_wrapper.features.branch_analytics`).
 * **🔍 Feature Tracer:** Search for logic or snippets across multiple repositories and branches (`gh_wrapper.features.feature_tracer`).
+* **🤖 PR Review:** Automated change summary and review suggestions for Pull Requests (`gh_wrapper.features.pr_review_analyzer`).
 * **👤 User Activity Analytics:** Trace a developer's recent work to understand intent and progress (`gh_wrapper.features.user_tracer`).
 * **📂 Repo Contextualizer:** One-call "Big Picture" view (Files, PRs, Branches, and README) for LLM context windows (`gh_wrapper.features.repo_context`).
 * **📝 Core Commands:** specialized wrappers for Commits, Pull Requests, Files, and Repository management.
@@ -120,6 +121,7 @@ uv sync --extra fancy
 # Run the demos
 uv run scripts/demo_read_repo_context.py
 uv run scripts/demo_trace_user_activity.py
+uv run scripts/demo_pr_review.py
 uv run scripts/demo_read_commit.py
 uv run scripts/demo_read_file.py
 ```
