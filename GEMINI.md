@@ -93,3 +93,18 @@ bash scripts/setup_dev.sh
 ### Error Handling
 *   Standardized error envelopes with `error` field, status code, and actionable messages.
 *   `GHCommandError` and `GHNotInstalledError` are used for specific CLI-related issues.
+
+
+### 🏛️ The Design Pattern
+
+For your `repo_analysis` feature, here is how you should distribute the logic:
+
+| Layer | Responsibility | Example Logic |
+| :--- | :--- | :--- |
+| **Command** | Fetching raw data from GitHub | `list_branches()`, `get_commit_history()` |
+| **Feature** | Orchestrating and Logic | Loop through branches 🔄, compare dates 📅, calculate "staleness" score ⚖️ |
+
+
+🎯 The Golden Rule
+RepoManager (Command Layer): "I fetch raw data from GitHub API"
+RepoAnalyzer (Feature Layer): "I transform that data into insights"

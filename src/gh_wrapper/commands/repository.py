@@ -17,14 +17,13 @@ class RepoManager:
         repo_basics = self._get_repo_basics()
         default_branch = branch or repo_basics.get("default_branch", "main")
 
-        readme = self.file_manager.get_file_content("README.md", default_branch)
         active_prs = self.pr_manager.list_prs(state="open", limit=5)
-
         branches = self.list_branches(limit=10)
 
         file_structure = self._get_file_strcture(default_branch)
         recent_commits = self._get_recent_commits(default_branch, limit=5)
 
+        readme = self.file_manager.get_file_content("README.md", default_branch)
         readme_snippet = "No README.md found."
         if readme:
             readme_snippet = readme[:3000]
@@ -50,12 +49,13 @@ class RepoManager:
         }
 
     def list_branches(self, limit: int = 10) -> List[Dict]:
+        """Lists branches in the repository using GitHub API"""
         if self.executor.repo:
             api_path = f"repos/{self.executor.repo}/branches"
         else:
             api_path = "repos/:owner/:repo/branches"
 
-        # params = ["api", api_path, "-F", f"per_page={limit}"]
+        # params = ["api", api_path, "-F", f"per_page={limit}"] (old code)
         params = ["api", f"{api_path}?per_page={limit}"]
         result = self.executor.execute(params, parse_json=True)
         if isinstance(result, list):
