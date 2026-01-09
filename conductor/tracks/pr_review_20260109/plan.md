@@ -29,7 +29,7 @@ This plan details the development steps for the `pr_review` feature, as defined 
     *   [ ] Sub-task: Run `uv run ruff check .` and `uv run ruff format .` on affected files.
     *   [ ] Sub-task: Run `uv run mypy .` on affected files.
     *   [ ] Sub-task: Ensure all unit tests (`uv run pytest tests/unit`) pass and maintain >80% coverage.
-*   [ ] Task: Conductor - User Manual Verification 'Command Layer Development (Agent A) - PR Data Fetching' (Protocol in workflow.md)
+* [x] Task: Conductor - User Manual Verification 'Command Layer Development (Agent A) - PR Data Fetching' (Protocol in workflow.md)
 
 ### Phase 2: Model Definition (Agent B) - Structured PR Review Data
 
@@ -54,33 +54,33 @@ This plan details the development steps for the `pr_review` feature, as defined 
     *   [ ] Sub-task: Run `uv run ruff check .` and `uv run ruff format .` on affected files.
     *   [ ] Sub-task: Run `uv run mypy .` on affected files.
     *   [ ] Sub-task: Ensure the new models validate correctly.
-*   [ ] Task: Conductor - User Manual Verification 'Model Definition (Agent B) - Structured PR Review Data' (Protocol in workflow.md)
+* [x] Task: Conductor - User Manual Verification 'Model Definition (Agent B) - Structured PR Review Data' (Protocol in workflow.md)
 
 ### Phase 3: Feature Layer Development (Agent B) - `PrReviewAnalyzer`
 
 **Objective:** Implement the core logic for the `pr_review` feature, orchestrating data fetching and analysis.
 
 *   **Task: Implement `PrReviewAnalyzer` Class**
-    *   [ ] Sub-task: Create `PrReviewAnalyzer` class in `src/gh_wrapper/features/pr_review_analyzer.py`.
+    *   [x] Sub-task: Create PrReviewAnalyzer class in src/gh_wrapper/features/pr_review_analyzer.py.
         *   Files: `src/gh_wrapper/features/pr_review_analyzer.py` (new)
-    *   [ ] Sub-task: Initialize `PrReviewAnalyzer` with necessary command managers (e.g., `PRManager`).
-    *   [ ] Sub-task: Integrate `RepoContextAnalyzer` to allow cross-referencing PR changes with the overall repository structure.
-    *   [ ] Sub-task: Update `src/gh_wrapper/features/__init__.py` to expose `pr_review_analyzer`.
+    *   [x] Sub-task: Initialize PrReviewAnalyzer with necessary command managers (e.g., `PRManager`).
+    *   [x] Sub-task: Integrate `RepoContextAnalyzer` to allow cross-referencing PR changes with the overall repository structure.
+    *   [x] Sub-task: Update `src/gh_wrapper/features/__init__.py` to expose `pr_review_analyzer`.
         *   Files: `src/gh_wrapper/features/__init__.py`
 *   **Task: Implement `analyze_pr` Method**
-    *   [ ] Sub-task: Implement method to accept `PrReviewInput` model.
-    *   [ ] Sub-task: Call `PRManager` to fetch raw PR data based on input.
-    *   [ ] Sub-task: Implement Diff Parsing: Parse the raw diff output from `gh pr diff --patch` into a structured format, mapping changes to `FileChange` models (from Phase 2) using a library like unidiff or a robust regex-based parser.
-    *   [ ] Sub-task: Process raw data to generate `PrSummary`.
-    *   [ ] Sub-task: Implement logic to identify patterns for `SuggestedComment` generation (e.g., regex for common issues, basic code style checks on diffs).
-    *   [ ] Sub-task: Construct `PrReviewOutput` model from processed data.
+    *   [x] Sub-task: Implement method to accept `PrReviewInput` model.
+    *   [x] Sub-task: Call `PRManager` to fetch raw PR data based on input.
+    *   [x] Sub-task: Implement Diff Parsing: Parse the raw diff output from `gh pr diff --patch` into a structured format, mapping changes to `FileChange` models (from Phase 2) using a library like unidiff or a robust regex-based parser.
+    *   [x] Sub-task: Process raw data to generate `PrSummary`.
+    *   [x] Sub-task: Implement logic to identify patterns for `SuggestedComment` generation (e.g., regex for common issues, basic code style checks on diffs).
+    *   [x] Sub-task: Construct `PrReviewOutput` model from processed data.
 *   **Task: Implement `format_as_markdown` Method**
-    *   [ ] Sub-task: Create a method to take `PrReviewOutput` and format it into a human-readable Markdown string.
+    *   [x] Sub-task: Create a method to take `PrReviewOutput` and format it into a human-readable Markdown string.
 *   **Task: Write Unit Tests for `PrReviewAnalyzer`**
-    *   [ ] Sub-task: Create `test_pr_review_analyzer.py`.
+    *   [x] Sub-task: Create `test_pr_review_analyzer.py`.
         *   Files: `tests/unit/features/test_pr_review_analyzer.py` (new)
-    *   [ ] Sub-task: Write unit tests for `analyze_pr` method, mocking `PRManager` calls.
-    *   [ ] Sub-task: Write unit tests for `format_as_markdown` method.
+    *   [x] Sub-task: Write unit tests for `analyze_pr` method, mocking `PRManager` calls.
+    *   [x] Sub-task: Write unit tests for `format_as_markdown` method.
 *   **Task: Local Quality Checks**
     *   [ ] Sub-task: Run `uv run ruff check .` and `uv run ruff format .` on affected files.
     *   [ ] Sub-task: Run `uv run mypy .` on affected files.
