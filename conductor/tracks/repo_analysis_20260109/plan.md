@@ -40,14 +40,14 @@
 - [ ] Task: Conductor - User Manual Verification 'Phase 3' (Protocol in workflow.md)
 
 ## Phase 4: Integration Testing
-- [ ] Task: Integration Testing.
-    - [ ] Sub-task: Create `tests/integration/test_repo_analysis_integration.py`.
-    - [ ] Sub-task: Test against actual repository using `test-branch-fixture` branch.
-    - [ ] Sub-task: Analyze `test-branch-fixture` (last 30 days).
-    - [ ] Sub-task: Analyze multiple branches (e.g., `main`, `test-branch-fixture`).
-    - [ ] Sub-task: Verify report structure and data quality.
-    - [ ] Sub-task: Format report as Markdown and verify readable output.
-    - [ ] Sub-task: Compare results against known commit history in test branch.
+- [x] Task: Integration Testing.
+    - [x] Sub-task: Create `tests/integration/test_repo_analysis_integration.py`.
+    - [x] Sub-task: Test against actual repository using `test-branch-fixture` branch.
+    - [x] Sub-task: Analyze `test-branch-fixture` (last 30 days).
+    - [x] Sub-task: Analyze multiple branches (e.g., `main`, `test-branch-fixture`).
+    - [x] Sub-task: Verify report structure and data quality.
+    - [x] Sub-task: Format report as Markdown and verify readable output.
+    - [x] Sub-task: Compare results against known commit history in test branch.
 - [ ] Task: Conductor - User Manual Verification 'Phase 4' (Protocol in workflow.md)
 
 ## Phase 5: Documentation & AI Context
