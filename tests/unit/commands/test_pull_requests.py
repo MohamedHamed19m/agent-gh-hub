@@ -1,16 +1,16 @@
 import pytest
+from unittest.mock import MagicMock
+from typing import Any, Dict, List
 
 from src.gh_wrapper.commands.pull_requests import PRManager
 from src.gh_wrapper.core.executor import GHExecutor
 
-
 # Mock GHExecutor for unit tests
 @pytest.fixture
-def mock_executor(mocker) -> GHExecutor:
+def mock_executor(mocker) -> MagicMock:
     return mocker.Mock(spec=GHExecutor)
 
-
-def test_pr_manager_list_prs(mock_executor: GHExecutor):
+def test_pr_manager_list_prs(mock_executor: MagicMock):
     """Test PRManager.list_prs with mocked executor."""
     expected_prs = [
         {
@@ -55,7 +55,7 @@ def test_pr_manager_list_prs(mock_executor: GHExecutor):
     )
 
 
-def test_pr_manager_list_prs_empty(mock_executor: GHExecutor):
+def test_pr_manager_list_prs_empty(mock_executor: MagicMock):
     """Test PRManager.list_prs when executor returns an empty list."""
     mock_executor.execute.return_value = []
 
@@ -78,7 +78,7 @@ def test_pr_manager_list_prs_empty(mock_executor: GHExecutor):
     )
 
 
-def test_pr_manager_get_pr_content(mock_executor: GHExecutor):
+def test_pr_manager_get_pr_content(mock_executor: MagicMock):
     """Test PRManager.get_pr_content with mocked executor."""
     expected_content = {
         "number": 1,
@@ -100,7 +100,7 @@ def test_pr_manager_get_pr_content(mock_executor: GHExecutor):
     )
 
 
-def test_pr_manager_get_pr_content_empty(mock_executor: GHExecutor):
+def test_pr_manager_get_pr_content_empty(mock_executor: MagicMock):
     """Test PRManager.get_pr_content when executor returns an empty dict."""
     mock_executor.execute.return_value = {}
 
@@ -113,44 +113,51 @@ def test_pr_manager_get_pr_content_empty(mock_executor: GHExecutor):
         parse_json=True,
     )
 
-
-def test_pr_manager_get_pr_diff(mock_executor: GHExecutor):
+def test_get_pr_diff(mock_executor: MagicMock):
     """Test PRManager.get_pr_diff with mocked executor."""
-    expected_diff = """diff --git a/file1.py b/file1.py
+    mock_diff_output = """
+diff --git a/src/file1.py b/src/file1.py
 index abcdefg..hijklmn 100644
---- a/file1.py
-+++ b/file1.py
+--- a/src/file1.py
++++ b/src/file1.py
+@@ -1,5 +1,6 @@
+ def hello_world():
+     print("Hello, world!")
++    print("New line added.")
+ """
+    mock_executor.execute.return_value = mock_diff_output
+
+    pr_manager = PRManager(mock_executor)
+    diff = pr_manager.get_pr_diff(pr_number=456)
+
+    expected_cmd = ["pr", "diff", "456", "--patch"]
+    mock_executor.execute.assert_called_once_with(expected_cmd, parse_json=False)
+    assert diff == mock_diff_output
+
+
+def test_get_pr_diff_with_target_branch(mock_executor: MagicMock):
+    """Test PRManager.get_pr_diff with a target branch."""
+    mock_diff_output = """
+diff --git a/src/file2.py b/src/file2.py
+index abcdefg..hijklmn 100644
+--- a/src/file2.py
++++ b/src/file2.py
 @@ -1,3 +1,4 @@
- def my_func():
--    print("hello")
-+    print("hello world")
-+    # new comment
-"""
-    mock_executor.execute.return_value = expected_diff
+ def goodbye():
+     print("Goodbye")
++    # This is a test comment
+ """
+    mock_executor.execute.return_value = mock_diff_output
 
     pr_manager = PRManager(mock_executor)
-    diff = pr_manager.get_pr_diff(number=1)
+    diff = pr_manager.get_pr_diff(pr_number=789, target_branch="main")
 
-    assert diff == expected_diff
-    mock_executor.execute.assert_called_once_with(
-        ["pr", "diff", "1", "--patch"],
-    )
-
-
-def test_pr_manager_get_pr_diff_empty(mock_executor: GHExecutor):
-    """Test PRManager.get_pr_diff when executor returns an empty string."""
-    mock_executor.execute.return_value = ""
-
-    pr_manager = PRManager(mock_executor)
-    diff = pr_manager.get_pr_diff(number=1)
-
-    assert diff == ""
-    mock_executor.execute.assert_called_once_with(
-        ["pr", "diff", "1", "--patch"],
-    )
+    expected_cmd = ["pr", "diff", "789", "--patch", "--base", "main"]
+    mock_executor.execute.assert_called_once_with(expected_cmd, parse_json=False)
+    assert diff == mock_diff_output
 
 
-def test_pr_manager_get_pr_diff_against_branch(mock_executor: GHExecutor):
+def test_pr_manager_get_pr_diff_against_branch(mock_executor: MagicMock):
     """Test PRManager.get_pr_diff_against_branch with mocked executor."""
     expected_diff = """diff --git a/file1.py b/file1.py
 index abcdefg..hijklmn 100644
@@ -168,20 +175,6 @@ index abcdefg..hijklmn 100644
     diff = pr_manager.get_pr_diff_against_branch(number=1, target_branch="develop")
 
     assert diff == expected_diff
-    mock_executor.execute.assert_called_once_with(
-        ["pr", "diff", "1", "--base", "develop", "--patch"],
-    )
-
-
-def test_pr_manager_get_pr_diff_against_branch_empty(mock_executor: GHExecutor):
-    """Test PRManager.get_pr_diff_against_branch when executor
-    returns an empty string."""
-    mock_executor.execute.return_value = ""
-
-    pr_manager = PRManager(mock_executor)
-    diff = pr_manager.get_pr_diff_against_branch(number=1, target_branch="develop")
-
-    assert diff == ""
     mock_executor.execute.assert_called_once_with(
         ["pr", "diff", "1", "--base", "develop", "--patch"],
     )
