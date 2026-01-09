@@ -25,8 +25,10 @@ def read_specific_file(repo_name: str, file_path: str = "") -> None:
             # Pick first file that isn't binary-ish
             for item in root_items:
                 if item.get("type") == "file" and item.get("path") != "uv.lock":
-                    file_path = item.get("path")
-                    break
+                    path = item.get("path")
+                    if isinstance(path, str):
+                        file_path = path
+                        break
 
     if not file_path:
         console.print("[bold red]Error:[/] No readable files found in the repository.")

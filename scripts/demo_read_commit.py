@@ -23,10 +23,18 @@ def get_commit_details_from_repo(repo_name: str) -> None:
         recent_commits = repo_manager.get_recent_commits(default_branch, limit=1)
 
     if not recent_commits:
-        console.print(f"[bold red]Error:[/] No commits found in [white]{repo_name}[/].")
+        console.print(
+            f"[bold red]Error:[/ ] No commits found in [white]{repo_name}[/]."
+        )
         return
 
     sha = recent_commits[0].get("sha")
+    if not isinstance(sha, str):
+        console.print(
+            f"[bold red]Error:[/ ] Could not find a valid commit SHA in "
+            f"[white]{repo_name}[/]."
+        )
+        return
 
     # 1. Show a spinner while the CLI works
     with console.status(
@@ -36,7 +44,7 @@ def get_commit_details_from_repo(repo_name: str) -> None:
         commit_details = commits_manager.get_commit_details(sha)
 
     if not commit_details:
-        console.print(f"[bold red]Error:[/] No details found for commit {sha}.")
+        console.print(f"[bold red]Error:[/ ] No details found for commit {sha}.")
         return
 
     commit_info = commit_details.get("commit", {})
@@ -44,10 +52,10 @@ def get_commit_details_from_repo(repo_name: str) -> None:
 
     # 2. Header Panel
     header_content = (
-        f"[bold cyan]SHA:[/] {commit_details.get('sha')}\n"
-        f"[bold cyan]Author:[/] {author_info.get('name')}\n"
-        f"[bold cyan]Date:[/] {author_info.get('date')}\n"
-        f"[bold cyan]Message:[/] [italic white]{commit_info.get('message')}[/]"
+        f"[bold cyan]SHA:[/ ] {commit_details.get('sha')}\n"
+        f"[bold cyan]Author:[/ ] {author_info.get('name')}\n"
+        f"[bold cyan]Date:[/ ] {author_info.get('date')}\n"
+        f"[bold cyan]Message:[/ ] [italic white]{commit_info.get('message')}[/imply]"
     )
     console.print(
         Panel(

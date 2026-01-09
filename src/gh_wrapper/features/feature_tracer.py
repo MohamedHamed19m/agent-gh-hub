@@ -128,10 +128,14 @@ class FeatureTracer:
                             keyword_lower in title.lower()
                             or keyword_lower in body.lower()
                         ):
+                            number = pr.get("number")
+                            if not isinstance(number, int):
+                                continue
+
                             labels_data = pr.get("labels", [])
                             trace.pr_matches.append(
                                 TracePR(
-                                    number=pr.get("number"),
+                                    number=number,
                                     title=title,
                                     author=pr.get("author", {}).get("login", "Unknown"),
                                     status=pr.get("state", "unknown"),

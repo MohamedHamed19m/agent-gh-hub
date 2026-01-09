@@ -91,10 +91,11 @@ def read_repo_context(repo_name: str) -> None:
     console.print(Columns([structure_tree, activity_panel]))
 
     # 4. README Snippet
-    if context.get("readme_snippet"):
+    readme = context.get("readme_snippet")
+    if readme:
         console.print(
             Panel(
-                context.get("readme_snippet"),
+                readme,
                 title="[bold]README Preview (Truncated)",
                 border_style="dim",
                 height=15,
