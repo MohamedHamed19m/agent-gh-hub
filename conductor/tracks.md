@@ -12,7 +12,3 @@ This file tracks all major tracks for the project. Each track has its own detail
 *Status: All core features implemented in src/gh_wrapper/features/*
 
 
----
-
-## [~] Track: Refactor RepoManager to follow clean layer separation and implement concurrency control.
-*Link: [./conductor/tracks/repomanager_refactor_20260109/](./conductor/tracks/repomanager_refactor_20260109/)*
