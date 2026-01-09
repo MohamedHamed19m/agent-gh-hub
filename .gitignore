@@ -26,4 +26,5 @@ htmlcov/
 # --- System/IDE ---
 .vscode/
 .idea/
-.DS_Store".trees/" 
+.DS_Store
+.trees/
