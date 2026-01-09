@@ -197,3 +197,24 @@ def test_trace_metadata_calculation(tracer: FeatureTracer) -> None:
         assert trace.total_mentions == 2
         assert trace.first_mention_date == "2023-01-01T10:00:00Z"
         assert trace.last_activity_date == "2023-01-10T10:00:00Z"
+
+
+def test_format_as_markdown(tracer: FeatureTracer) -> None:
+    from gh_wrapper.models.trace import FeatureTrace, MultiRepoFeatureTrace
+
+    trace = FeatureTrace(
+        keyword="test",
+        repo="org/repo",
+        total_mentions=1,
+        contributors=[{"username": "u1", "commit_count": 1, "pr_count": 0}],
+    )
+    report = MultiRepoFeatureTrace(
+        keyword="test", repos_searched=["org/repo"], traces={"org/repo": trace}
+    )
+
+    markdown = tracer.format_as_markdown(report)
+
+    assert "# Feature Trace Report: test" in markdown
+    assert "org/repo" in markdown
+    assert "u1" in markdown
+    assert "1" in markdown

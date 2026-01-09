@@ -28,10 +28,10 @@
 - [ ] Task: Conductor - User Manual Verification 'Phase 3' (Protocol in workflow.md)
 
 ## Phase 4: Formatting & Documentation
-- [ ] Task: Implement `format_as_markdown` method.
-    - [ ] Sub-task: Write unit tests for markdown output consistency.
-    - [ ] Sub-task: Implement summary layout with contributor rankings.
-- [ ] Task: Add comprehensive docstrings and usage examples.
+- [x] Task: Implement `format_as_markdown` method.
+    - [x] Sub-task: Write unit tests for markdown output consistency.
+    - [x] Sub-task: Implement summary layout with contributor rankings.
+- [x] Task: Add comprehensive docstrings and usage examples.
 - [ ] Task: Conductor - User Manual Verification 'Phase 4' (Protocol in workflow.md)
 
 ## Phase 5: Integration & Final Verification

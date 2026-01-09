@@ -42,6 +42,11 @@ class FeatureTracer:
         """
         Trace a keyword across specified repositories and branches.
 
+        Example:
+            >>> tracer = FeatureTracer()
+            >>> report = tracer.trace_feature("secure boot", repos=["org/repo1"])
+            >>> print(tracer.format_as_markdown(report))
+
         Args:
             keyword: The phrase to search for.
             repos: Single repo string or list of repo strings.
@@ -148,6 +153,42 @@ class FeatureTracer:
                 continue
 
         return multi_trace
+
+    def format_as_markdown(self, report: MultiRepoFeatureTrace) -> str:
+        """
+        Formats the multi-repo feature trace report as a Markdown string.
+
+        Args:
+            report: The MultiRepoFeatureTrace to format.
+
+        Returns:
+            A formatted Markdown string summary.
+        """
+        lines = [f"# Feature Trace Report: {report.keyword}", ""]
+
+        for repo_name, trace in report.traces.items():
+            lines.append(f"## Repository: {repo_name}")
+            lines.append(f"- **Total Mentions:** {trace.total_mentions}")
+            lines.append(f"- **File Matches:** {len(trace.file_matches)}")
+            lines.append(f"- **Commit Matches:** {len(trace.commit_matches)}")
+            lines.append(f"- **PR Matches:** {len(trace.pr_matches)}")
+            if trace.first_mention_date:
+                lines.append(f"- **First Activity:** {trace.first_mention_date}")
+            if trace.last_activity_date:
+                lines.append(f"- **Last Activity:** {trace.last_activity_date}")
+            lines.append("")
+
+            if trace.contributors:
+                lines.append("### Top Contributors")
+                lines.append("| Username | Commits | PRs |")
+                lines.append("| :--- | :--- | :--- |")
+                for c in trace.contributors[:10]:
+                    lines.append(
+                        f"| {c['username']} | {c['commit_count']} | {c['pr_count']} |"
+                    )
+                lines.append("")
+
+        return "\n".join(lines)
 
     def _enrich_trace_data(self, trace: FeatureTrace) -> None:
         """
