@@ -1,0 +1,8 @@
+{
+  "track_id": "feature_tracer_20260109",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2026-01-09T12:30:00Z",
+  "updated_at": "2026-01-09T12:30:00Z",
+  "description": "Create a FeatureTracer that searches across repos, commits, PRs, and contributors for any feature/topic."
+}
