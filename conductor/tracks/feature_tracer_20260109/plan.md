@@ -9,14 +9,14 @@
 - [ ] Task: Conductor - User Manual Verification 'Phase 1' (Protocol in workflow.md)
 
 ## Phase 2: Core Search Logic (TDD)
-- [ ] Task: Scaffold `FeatureTracer` class in `src/gh_wrapper/features/feature_tracer.py`.
-- [ ] Task: Implement `trace_feature` method (TDD).
-    - [ ] Sub-task: Write unit tests mocking `FileManager`, `CommitsManager`, and `PRManager`.
-    - [ ] Sub-task: Implement repo normalization logic.
-    - [ ] Sub-task: Implement search in files using `FileManager`.
-    - [ ] Sub-task: Implement search in commits with client-side keyword filtering.
-    - [ ] Sub-task: Implement search in PRs with client-side keyword filtering.
-    - [ ] Sub-task: Verify search toggles (`search_files`, `search_commits`, `search_prs`) are respected.
+- [x] Task: Scaffold `FeatureTracer` class in `src/gh_wrapper/features/feature_tracer.py`.
+- [x] Task: Implement `trace_feature` method (TDD).
+    - [x] Sub-task: Write unit tests mocking `FileManager`, `CommitsManager`, and `PRManager`.
+    - [x] Sub-task: Implement repo normalization logic.
+    - [x] Sub-task: Implement search in files using `FileManager`.
+    - [x] Sub-task: Implement search in commits with client-side keyword filtering.
+    - [x] Sub-task: Implement search in PRs with client-side keyword filtering.
+    - [x] Sub-task: Verify search toggles (`search_files`, `search_commits`, `search_prs`) are respected.
 - [ ] Task: Conductor - User Manual Verification 'Phase 2' (Protocol in workflow.md)
 
 ## Phase 3: Contributor Analysis & Metadata (TDD)

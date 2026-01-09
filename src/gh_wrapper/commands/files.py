@@ -63,3 +63,28 @@ class FileManager:
         if isinstance(result, list):
             return result
         return []  # If it's a file, it returns dict, or empty
+
+    def search_in_files(self, query: str, limit: int = 50) -> List[Dict]:
+        """Search code for a keyword using 'gh search code'"""
+        cmd = [
+            "search",
+            "code",
+            query,
+            "--repo",
+            self.executor.repo or "",
+            "--limit",
+            str(limit),
+            "--json",
+            "path,text_matches",
+        ]
+        result = self.executor.execute(cmd, parse_json=True)
+        if isinstance(result, list):
+            matches = []
+            for item in result:
+                snippet = None
+                if item.get("text_matches"):
+                    # Get the first match fragment
+                    snippet = item["text_matches"][0].get("fragment")
+                matches.append({"path": item.get("path"), "snippet": snippet})
+            return matches
+        return []
