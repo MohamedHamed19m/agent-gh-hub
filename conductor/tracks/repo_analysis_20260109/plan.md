@@ -17,17 +17,17 @@
 - [ ] Task: Conductor - User Manual Verification 'Phase 1' (Protocol in workflow.md)
 
 ## Phase 2: Core Logic Implementation
-- [ ] Task: Implement `analyze_commit_patterns` (TDD).
-    - [ ] Sub-task: Write unit tests mocking `get_commits_for_analysis` for multiple branches.
-    - [ ] Sub-task: Implement aggregation logic with separate helper methods:
+- [x] Task: Implement `analyze_commit_patterns` (TDD).
+    - [x] Sub-task: Write unit tests mocking `get_commits_for_analysis` for multiple branches.
+    - [x] Sub-task: Implement aggregation logic with separate helper methods:
         - `_calculate_daily_trend()` (Daily/weekly commit counts)
         - `_analyze_contributors()` (Top contributors with percentages)
         - `_analyze_time_patterns()` (By hour and by weekday)
-    - [ ] Sub-task: Verify tests pass with >80% coverage.
-- [ ] Task: Error Handling & Edge Cases.
-    - [ ] Sub-task: Add logging for warnings and errors.
-    - [ ] Sub-task: Add input validation (non-empty branches, positive days_back).
-    - [ ] Sub-task: Test edge cases:
+    - [x] Sub-task: Verify tests pass with >80% coverage.
+- [x] Task: Error Handling & Edge Cases.
+    - [x] Sub-task: Add logging for warnings and errors.
+    - [x] Sub-task: Add input validation (non-empty branches, positive days_back).
+    - [x] Sub-task: Test edge cases:
         - Invalid branch names
         - Empty commit history
         - API failures (rate limits, network errors)

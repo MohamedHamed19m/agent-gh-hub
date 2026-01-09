@@ -1,5 +1,7 @@
 import logging
-from typing import Dict, List
+from collections import Counter
+from datetime import datetime, timedelta
+from typing import Any, Dict, List
 
 from ..commands.commits import CommitsManager
 from ..models.analysis import (
@@ -24,7 +26,43 @@ class RepoAnalyzer:
         """
         Orchestrates commit pattern analysis across multiple branches
         """
-        raise NotImplementedError()
+        if not branches:
+            raise ValueError("At least one branch must be provided.")
+        if days_back <= 0:
+            raise ValueError("days_back must be a positive integer.")
+
+        since = (datetime.now() - timedelta(days=days_back)).isoformat()
+
+        all_commits: List[Dict[str, Any]] = []
+        seen_shas = set()
+
+        for branch in branches:
+            try:
+                commits = self.commits_manager.get_commits_for_analysis(
+                    branch=branch, since=since
+                )
+                for c in commits:
+                    sha = c.get("sha")
+                    if sha and sha not in seen_shas:
+                        all_commits.append(c)
+                        seen_shas.add(sha)
+            except Exception as e:
+                logger.warning(f"Failed to fetch commits for branch {branch}: {e}")
+
+        all_commits.sort(
+            key=lambda x: x.get("commit", {}).get("author", {}).get("date", ""),
+            reverse=True,
+        )
+
+        return CommitAnalysisReport(
+            repository=self.commits_manager.executor.repo or "unknown",
+            branches=branches,
+            since=since,
+            total_commits=len(all_commits),
+            daily_trends=self._calculate_daily_trend(all_commits),
+            contributors=self._analyze_contributors(all_commits),
+            time_patterns=self._analyze_time_patterns(all_commits),
+        )
 
     def format_as_markdown(self, report: CommitAnalysisReport) -> str:
         """
@@ -32,14 +70,72 @@ class RepoAnalyzer:
         """
         raise NotImplementedError()
 
-    def _calculate_daily_trend(self, all_commits: List[Dict]) -> List[DailyStats]:
+    def _calculate_daily_trend(
+        self, all_commits: List[Dict[str, Any]]
+    ) -> List[DailyStats]:
         """Helper to calculate daily commit counts"""
-        raise NotImplementedError()
+        date_counts: Counter[str] = Counter()
+        for c in all_commits:
+            date_str = c.get("commit", {}).get("author", {}).get("date", "")
+            if date_str:
+                # ISO date is YYYY-MM-DDTHH:MM:SSZ
+                day = date_str.split("T")[0]
+                date_counts[day] += 1
 
-    def _analyze_contributors(self, all_commits: List[Dict]) -> List[ContributorStats]:
+        # Sort by date
+        sorted_dates = sorted(date_counts.keys())
+        return [DailyStats(date=d, commit_count=date_counts[d]) for d in sorted_dates]
+
+    def _analyze_contributors(
+        self, all_commits: List[Dict[str, Any]]
+    ) -> List[ContributorStats]:
         """Helper to analyze contributor activity"""
-        raise NotImplementedError()
+        author_counts: Counter[str] = Counter()
+        for c in all_commits:
+            author = c.get("commit", {}).get("author", {}).get("name", "Unknown")
+            author_counts[author] += 1
 
-    def _analyze_time_patterns(self, all_commits: List[Dict]) -> TimePatterns:
+        total = len(all_commits)
+        stats = []
+        for author, count in author_counts.most_common():
+            stats.append(
+                ContributorStats(
+                    author=author,
+                    commit_count=count,
+                    percentage=round((count / total * 100), 2) if total > 0 else 0,
+                )
+            )
+        return stats
+
+    def _analyze_time_patterns(self, all_commits: List[Dict[str, Any]]) -> TimePatterns:
         """Helper to analyze hourly and weekday patterns"""
-        raise NotImplementedError()
+        hour_counts: Counter[int] = Counter()
+        weekday_counts: Counter[str] = Counter()
+
+        for c in all_commits:
+            date_str = c.get("commit", {}).get("author", {}).get("date", "")
+            if date_str:
+                try:
+                    # Handle both Z and +HH:MM offsets if present,
+                    # but simple split/parse is often enough for GH API ISO dates
+                    dt = datetime.fromisoformat(date_str.replace("Z", "+00:00"))
+                    hour_counts[dt.hour] += 1
+                    weekday_counts[dt.strftime("%A")] += 1
+                except ValueError:
+                    continue
+
+        # Ensure all hours (0-23) are present for consistency
+        hourly = {h: hour_counts.get(h, 0) for h in range(24)}
+
+        weekdays = [
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+            "Sunday",
+        ]
+        daily = {d: weekday_counts.get(d, 0) for d in weekdays}
+
+        return TimePatterns(hourly_distribution=hourly, weekday_distribution=daily)
