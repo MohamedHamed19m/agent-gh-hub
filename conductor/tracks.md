@@ -1,4 +1,4 @@
-# Project Tracks
+﻿# Project Tracks
 
 This file tracks all major tracks for the project. Each track has its own detailed plan in its respective folder.
 
@@ -11,3 +11,8 @@ This file tracks all major tracks for the project. Each track has its own detail
 *Includes: Feature Tracer, User Tracer, Repo Context, and Advanced Commit Search.*
 *Status: All core features implemented in src/gh_wrapper/features/*
 
+
+---
+
+## [~] Track: Refactor RepoManager to follow clean layer separation and implement concurrency control.
+*Link: [./conductor/tracks/repomanager_refactor_20260109/](./conductor/tracks/repomanager_refactor_20260109/)*

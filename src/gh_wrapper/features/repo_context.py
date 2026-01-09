@@ -10,4 +10,7 @@ class RepoContextAnalyzer:
 
     def analyze_current_context(self, branch: Optional[str] = None) -> Dict[str, Any]:
         """Analyze repository context"""
-        return self.manager.get_context(branch=branch)
+        # TEMPORARILY DISABLED: Requires RepoContextAnalyzer re-implementation
+        # after the RepoManager refactor.
+        # return self.manager.get_context(branch=branch)
+        return {}

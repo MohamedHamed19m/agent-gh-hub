@@ -20,7 +20,7 @@ def trace_user_activity(repo_name: str, limit: int = 10) -> None:
 
         with console.status("[bold green]Detecting latest contributor..."):
             default_branch = repo_manager.get_default_branch()
-            recent_commits = repo_manager._get_recent_commits(default_branch, limit=5)
+            recent_commits = repo_manager.get_recent_commits(default_branch, limit=5)
 
         if not recent_commits:
             console.print(

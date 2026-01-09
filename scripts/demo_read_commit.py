@@ -20,7 +20,7 @@ def get_commit_details_from_repo(repo_name: str) -> None:
 
     with console.status("[bold green]Detecting default branch and latest commit..."):
         default_branch = repo_manager.get_default_branch()
-        recent_commits = repo_manager._get_recent_commits(default_branch, limit=1)
+        recent_commits = repo_manager.get_recent_commits(default_branch, limit=1)
 
     if not recent_commits:
         console.print(f"[bold red]Error:[/] No commits found in [white]{repo_name}[/].")

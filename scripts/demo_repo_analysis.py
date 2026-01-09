@@ -22,7 +22,8 @@ def main() -> None:
     # Header Panel
     console.print(
         Panel(
-            f"[bold cyan]Repository Analysis Engine[/]\n[bold white]Target:[/] {repo_display}",
+            f"[bold cyan]Repository Analysis Engine[/]\n"
+            f"[bold white]Target:[/] {repo_display}",
             expand=False,
             border_style="cyan",
         )
