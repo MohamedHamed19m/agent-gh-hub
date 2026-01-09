@@ -36,24 +36,25 @@ This plan details the development steps for the `pr_review` feature, as defined 
 **Objective:** Define Pydantic models to structure the input and output data for the `pr_review` feature.
 
 *   **Task: Define PR Review Input Models**
-    *   [ ] Sub-task: Create a Pydantic model for `PrReviewInput` (e.g., `repo_name`, `pr_id`, `target_branch`, `review_depth`).
+    *   [x] Sub-task: Create a Pydantic model for `PrReviewInput` (e.g., `repo_name`, `pr_id`, `target_branch`, `review_depth`).
         *   Files: `src/gh_wrapper/models/pr_review.py` (new)
-    *   [ ] Sub-task: Update `src/gh_wrapper/models/__init__.py` to expose `pr_review` models.
+    *   [x] Sub-task: Update `src/gh_wrapper/models/__init__.py` to expose `pr_review` models.
         *   Files: `src/gh_wrapper/models/__init__.py`
 *   **Task: Define PR Review Output Models**
-    *   [ ] Sub-task: Create Pydantic models for `PrSummary` (modified files, key diffs).
+    *   [x] Sub-task: Create Pydantic models for `PrSummary` (modified files, key diffs).
         *   Files: `src/gh_wrapper/models/pr_review.py`
-    *   [ ] Sub-task: Create Pydantic models for `SuggestedComment` (text, severity, location, type).
+    *   [x] Sub-task: Create Pydantic models for `SuggestedComment` (text, severity, location, type).
         *   Files: `src/gh_wrapper/models/pr_review.py`
-    *   [ ] Sub-task: Create a top-level Pydantic model for `PrReviewOutput` (combining summary, comments, metrics).
+    *   [x] Sub-task: Create a top-level Pydantic model for `PrReviewOutput` (combining summary, comments, metrics).
         *   Files: `src/gh_wrapper/models/pr_review.py`
 *   **Task: Update `pyproject.toml`**
-    *   [ ] Sub-task: Add any new dependencies required by the `pr_review` models (unlikely for `pydantic` if already present).
+    *   [x] Sub-task: Add any new dependencies required by the `pr_review` models (unlikely for `pydantic` if already present).
         *   Files: `pyproject.toml`
 *   **Task: Local Quality Checks**
-    *   [ ] Sub-task: Run `uv run ruff check .` and `uv run ruff format .` on affected files.
-    *   [ ] Sub-task: Run `uv run mypy .` on affected files.
-    *   [ ] Sub-task: Ensure the new models validate correctly.
+    *   [x] Sub-task: Run `uv run ruff check .` and `uv run ruff format .` on affected files.
+    *   [x] Sub-task: Run `uv run mypy .` on affected files.
+    *   [x] Sub-task: Ensure the new models validate correctly.
+
 * [x] Task: Conductor - User Manual Verification 'Model Definition (Agent B) - Structured PR Review Data' (Protocol in workflow.md)
 
 ### Phase 3: Feature Layer Development (Agent B) - `PrReviewAnalyzer`
@@ -82,29 +83,29 @@ This plan details the development steps for the `pr_review` feature, as defined 
     *   [x] Sub-task: Write unit tests for `analyze_pr` method, mocking `PRManager` calls.
     *   [x] Sub-task: Write unit tests for `format_as_markdown` method.
 *   **Task: Local Quality Checks**
-    *   [ ] Sub-task: Run `uv run ruff check .` and `uv run ruff format .` on affected files.
-    *   [ ] Sub-task: Run `uv run mypy .` on affected files.
-    *   [ ] Sub-task: Ensure all unit tests (`uv run pytest tests/unit`) pass and maintain >80% coverage.
-*   [ ] Task: Conductor - User Manual Verification 'Feature Layer Development (Agent B) - `PrReviewAnalyzer`' (Protocol in workflow.md)
+    *   [x] Sub-task: Run `uv run ruff check .` and `uv run ruff format .` on affected files.
+    *   [x] Sub-task: Run `uv run mypy .` on affected files.
+    *   [x] Sub-task: Ensure all unit tests (`uv run pytest tests/unit`) pass and maintain >80% coverage.
+* [x] Task: Conductor - User Manual Verification 'Feature Layer Development (Agent B) - `PrReviewAnalyzer`' (Protocol in workflow.md)
 
 ### Phase 4: Integration & Refinement (Both Agents/Shared)
 
 **Objective:** Ensure end-to-end functionality, validate the feature with integration tests, and provide a usage example.
 
 *   **Task: Write Integration Tests for `pr_review` Feature**
-    *   [ ] Sub-task: Create `test_pr_review_integration.py`.
+    *   [x] Sub-task: Create `test_pr_review_integration.py`.
         *   Files: `tests/integration/test_pr_review_integration.py` (new)
-    *   [ ] Sub-task: Write integration tests that invoke `PrReviewAnalyzer` with real `gh` CLI calls.
-    *   [ ] Sub-task: Verify both JSON and Markdown outputs against expected results.
+    *   [x] Sub-task: Write integration tests that invoke `PrReviewAnalyzer` with real `gh` CLI calls.
+    *   [x] Sub-task: Verify both JSON and Markdown outputs against expected results.
 *   **Task: Create Demo Script**
-    *   [ ] Sub-task: Create `demo_pr_review.py` demonstrating how to use the new feature.
+    *   [x] Sub-task: Create `demo_pr_review.py` demonstrating how to use the new feature.
         *   Files: `scripts/demo_pr_review.py` (new)
-    *   [ ] Sub-task: Include example usage for both structured JSON and formatted Markdown output.
+    *   [x] Sub-task: Include example usage for both structured JSON and formatted Markdown output.
 *   **Task: Documentation Updates**
-    *   [ ] Sub-task: Update `README.md` with a brief mention of the new feature.
-    *   [ ] Sub-task: Add a usage example to `docs/Usage_example.md`.
+    *   [x] Sub-task: Update `README.md` with a brief mention of the new feature.
+    *   [x] Sub-task: Add a usage example to `docs/Usage_example.md`.
 *   **Task: Final Quality Checks**
-    *   [ ] Sub-task: Run all tests (`uv run pytest`).
-    *   [ ] Sub-task: Ensure overall unit test coverage is >80%.
-    *   [ ] Sub-task: Run `uv run ruff check .`, `uv run ruff format .`, and `uv run mypy .` on the entire project.
-*   [ ] Task: Conductor - User Manual Verification 'Integration & Refinement (Both Agents/Shared)' (Protocol in workflow.md)
+    *   [x] Sub-task: Run all tests (`uv run pytest`).
+    *   [x] Sub-task: Ensure overall unit test coverage is >80%.
+    *   [x] Sub-task: Run `uv run ruff check .`, `uv run ruff format .`, and `uv run mypy .` on the entire project.
+* [x] Task: Conductor - User Manual Verification 'Integration & Refinement (Both Agents/Shared)' (Protocol in workflow.md)
