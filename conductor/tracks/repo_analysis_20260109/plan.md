@@ -34,9 +34,9 @@
 - [ ] Task: Conductor - User Manual Verification 'Phase 2' (Protocol in workflow.md)
 
 ## Phase 3: Output Formatting
-- [ ] Task: Implement `format_as_markdown`.
-    - [ ] Sub-task: Write unit tests with sample models.
-    - [ ] Sub-task: Implement formatting logic for Markdown tables and lists.
+- [x] Task: Implement `format_as_markdown`.
+    - [x] Sub-task: Write unit tests with sample models.
+    - [x] Sub-task: Implement formatting logic for Markdown tables and lists.
 - [ ] Task: Conductor - User Manual Verification 'Phase 3' (Protocol in workflow.md)
 
 ## Phase 4: Integration Testing

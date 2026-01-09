@@ -4,7 +4,12 @@ import pytest
 
 from gh_wrapper.commands.commits import CommitsManager
 from gh_wrapper.features.repo_analysis import RepoAnalyzer
-from gh_wrapper.models.analysis import CommitAnalysisReport
+from gh_wrapper.models.analysis import (
+    CommitAnalysisReport,
+    ContributorStats,
+    DailyStats,
+    TimePatterns,
+)
 
 
 @pytest.fixture
@@ -100,3 +105,39 @@ def test_analyze_commit_patterns_api_failure(
     report = repo_analyzer.analyze_commit_patterns(branches=["main"], days_back=30)
 
     assert report.total_commits == 0
+
+
+def test_format_as_markdown(repo_analyzer: RepoAnalyzer) -> None:
+    report = CommitAnalysisReport(
+        repository="test/repo",
+        branches=["main"],
+        since="2023-01-01T00:00:00Z",
+        total_commits=10,
+        daily_trends=[DailyStats(date="2023-01-01", commit_count=10)],
+        contributors=[
+            ContributorStats(author="User 1", commit_count=10, percentage=100.0)
+        ],
+        time_patterns=TimePatterns(
+            hourly_distribution={i: (10 if i == 12 else 0) for i in range(24)},
+            weekday_distribution={
+                d: (10 if d == "Monday" else 0)
+                for d in [
+                    "Monday",
+                    "Tuesday",
+                    "Wednesday",
+                    "Thursday",
+                    "Friday",
+                    "Saturday",
+                    "Sunday",
+                ]
+            },
+        ),
+    )
+
+    markdown = repo_analyzer.format_as_markdown(report)
+
+    assert "# Repository Analysis Report" in markdown
+    assert "test/repo" in markdown
+    assert "User 1" in markdown
+    assert "100.0%" in markdown
+    assert "2023-01-01" in markdown

@@ -68,7 +68,63 @@ class RepoAnalyzer:
         """
         Formats the analysis report as a human-readable Markdown string
         """
-        raise NotImplementedError()
+        lines = [
+            "# Repository Analysis Report",
+            f"**Repository:** {report.repository}",
+            f"**Branches:** {', '.join(report.branches)}",
+            f"**Since:** {report.since}",
+            f"**Total Commits:** {report.total_commits}",
+            "",
+            "## Contributor Activity",
+            "| Author | Commits | Percentage |",
+            "| :--- | :--- | :--- |",
+        ]
+
+        for c in report.contributors:
+            lines.append(f"| {c.author} | {c.commit_count} | {c.percentage}% |")
+
+        lines.extend(
+            [
+                "",
+                "## Daily Trends",
+                "| Date | Commit Count |",
+                "| :--- | :--- |",
+            ]
+        )
+
+        for d in report.daily_trends:
+            lines.append(f"| {d.date} | {d.commit_count} |")
+
+        lines.extend(
+            [
+                "",
+                "## Time-based Patterns",
+                "",
+                "### Weekly Distribution",
+                "| Day | Commits |",
+                "| :--- | :--- |",
+            ]
+        )
+
+        for day, count in report.time_patterns.weekday_distribution.items():
+            lines.append(f"| {day} | {count} |")
+
+        lines.extend(
+            [
+                "",
+                "### Hourly Distribution (Peak Hours)",
+                "| Hour | Commits |",
+                "| :--- | :--- |",
+            ]
+        )
+
+        # Only show hours with commits to keep it concise, or maybe all?
+        # Let's show all for now or top 5? Let's show hours with > 0 commits.
+        for hour, count in sorted(report.time_patterns.hourly_distribution.items()):
+            if count > 0:
+                lines.append(f"| {hour:02d}:00 | {count} |")
+
+        return "\n".join(lines)
 
     def _calculate_daily_trend(
         self, all_commits: List[Dict[str, Any]]
