@@ -75,16 +75,16 @@ class FileManager:
             "--limit",
             str(limit),
             "--json",
-            "path,text_matches",
+            "path,textMatches",
         ]
         result = self.executor.execute(cmd, parse_json=True)
         if isinstance(result, list):
             matches = []
             for item in result:
                 snippet = None
-                if item.get("text_matches"):
+                if item.get("textMatches"):
                     # Get the first match fragment
-                    snippet = item["text_matches"][0].get("fragment")
+                    snippet = item["textMatches"][0].get("fragment")
                 matches.append({"path": item.get("path"), "snippet": snippet})
             return matches
         return []

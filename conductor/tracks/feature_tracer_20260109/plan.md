@@ -35,10 +35,10 @@
 - [ ] Task: Conductor - User Manual Verification 'Phase 4' (Protocol in workflow.md)
 
 ## Phase 5: Integration & Final Verification
-- [ ] Task: Integration Testing.
-    - [ ] Sub-task: Create `tests/integration/test_feature_tracer_integration.py`.
-    - [ ] Sub-task: Verify search against a real public repository.
-- [ ] Task: Final Quality Check.
-    - [ ] Sub-task: Run full test suite (`unit` + `integration`).
-    - [ ] Sub-task: Verify `ruff` and `mypy` pass without errors.
+- [x] Task: Integration Testing.
+    - [x] Sub-task: Create `tests/integration/test_feature_tracer_integration.py`.
+    - [x] Sub-task: Verify search against a real public repository.
+- [x] Task: Final Quality Check.
+    - [x] Sub-task: Run full test suite (`unit` + `integration`).
+    - [x] Sub-task: Verify `ruff` and `mypy` pass without errors.
 - [ ] Task: Conductor - User Manual Verification 'Phase 5' (Protocol in workflow.md)
