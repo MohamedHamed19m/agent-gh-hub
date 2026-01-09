@@ -1,8 +1,8 @@
 import pytest
 
-from src.gh_wrapper.commands.pull_requests import PRManager
-from src.gh_wrapper.features.pr_review_analyzer import PrReviewAnalyzer
-from src.gh_wrapper.models.pr_review import (
+from gh_wrapper.commands.pull_requests import PRManager
+from gh_wrapper.features.pr_review_analyzer import PrReviewAnalyzer
+from gh_wrapper.models.pr_review import (
     FileModification,
     Location,
     PrReviewInput,

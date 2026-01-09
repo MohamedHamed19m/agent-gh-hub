@@ -2,8 +2,8 @@ import pytest
 from unittest.mock import MagicMock
 from typing import Any, Dict, List
 
-from src.gh_wrapper.commands.pull_requests import PRManager
-from src.gh_wrapper.core.executor import GHExecutor
+from gh_wrapper.commands.pull_requests import PRManager
+from gh_wrapper.core.executor import GHExecutor
 
 # Mock GHExecutor for unit tests
 @pytest.fixture

@@ -1,8 +1,8 @@
 import re
 from typing import Dict, List
 
-from src.gh_wrapper.commands.pull_requests import PRManager
-from src.gh_wrapper.models.pr_review import (
+from gh_wrapper.commands.pull_requests import PRManager
+from gh_wrapper.models.pr_review import (
     FileModification,
     PrReviewInput,
     PrReviewOutput,
@@ -25,10 +25,12 @@ class PrReviewAnalyzer:
         # Fetch raw PR data including diffs
         if pr_input.target_branch:
             pr_diff_patch = self.pr_manager.get_pr_diff_against_branch(
-                pr_input.pr_id, pr_input.target_branch
+                pr_input.pr_id, pr_input.target_branch, repo=pr_input.repo_name
             )
         else:
-            pr_diff_patch = self.pr_manager.get_pr_diff(pr_input.pr_id)
+            pr_diff_patch = self.pr_manager.get_pr_diff(
+                pr_input.pr_id, repo=pr_input.repo_name
+            )
 
         # --- Diff Parsing Logic ---
         summary_data = PrSummary(modified_files=[], key_diffs={})
