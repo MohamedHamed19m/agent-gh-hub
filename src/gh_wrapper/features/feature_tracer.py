@@ -1,5 +1,6 @@
 import logging
-from typing import List, Optional, Union
+from collections import Counter
+from typing import List, Optional, Union, cast
 
 from ..commands.commits import CommitsManager
 from ..commands.files import FileManager
@@ -137,6 +138,9 @@ class FeatureTracer:
                                 )
                             )
 
+                # 4. Aggregate Contributors & Calculate Metadata
+                self._enrich_trace_data(trace)
+
                 multi_trace.traces[repo] = trace
 
             except Exception as e:
@@ -144,3 +148,44 @@ class FeatureTracer:
                 continue
 
         return multi_trace
+
+    def _enrich_trace_data(self, trace: FeatureTrace) -> None:
+        """
+        Aggregate contributor stats and calculate metadata for a single repo trace.
+        """
+        commit_authors = [c.author for c in trace.commit_matches]
+        pr_authors = [pr.author for pr in trace.pr_matches]
+
+        all_authors = set(commit_authors + pr_authors)
+        commit_counts = Counter(commit_authors)
+        pr_counts = Counter(pr_authors)
+
+        contributors = []
+        for author in all_authors:
+            contributors.append(
+                {
+                    "username": author,
+                    "commit_count": commit_counts[author],
+                    "pr_count": pr_counts[author],
+                    "total": commit_counts[author] + pr_counts[author],
+                }
+            )
+
+        # Rank by total volume
+        contributors.sort(key=lambda x: cast(int, x["total"]), reverse=True)
+        # Remove the 'total' helper key for the final model
+        for c in contributors:
+            del c["total"]
+
+        trace.contributors = contributors
+
+        # Metadata
+        trace.total_mentions = len(trace.commit_matches) + len(trace.pr_matches)
+
+        dates = [c.date for c in trace.commit_matches if c.date] + [
+            pr.created_at for pr in trace.pr_matches if pr.created_at
+        ]
+
+        if dates:
+            trace.first_mention_date = min(dates)
+            trace.last_activity_date = max(dates)

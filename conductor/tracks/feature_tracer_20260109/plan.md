@@ -20,11 +20,11 @@
 - [ ] Task: Conductor - User Manual Verification 'Phase 2' (Protocol in workflow.md)
 
 ## Phase 3: Contributor Analysis & Metadata (TDD)
-- [ ] Task: Implement contributor aggregation logic.
-    - [ ] Sub-task: Write unit tests for contributor counting from commits/PRs.
-    - [ ] Sub-task: Implement ranking logic (sort by activity volume).
-- [ ] Task: Implement trace metadata calculation.
-    - [ ] Sub-task: Calculate `total_mentions`, `first_mention_date`, `last_activity_date`.
+- [x] Task: Implement contributor aggregation logic.
+    - [x] Sub-task: Write unit tests for contributor counting from commits/PRs.
+    - [x] Sub-task: Implement ranking logic (sort by activity volume).
+- [x] Task: Implement trace metadata calculation.
+    - [x] Sub-task: Calculate `total_mentions`, `first_mention_date`, `last_activity_date`.
 - [ ] Task: Conductor - User Manual Verification 'Phase 3' (Protocol in workflow.md)
 
 ## Phase 4: Formatting & Documentation
