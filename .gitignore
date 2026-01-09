@@ -1,0 +1,30 @@
+# --- Python/uv Specific ---
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+.mypy_cache/
+.pytest_cache/
+*.py[cod]
+*$py.class
+.ipynb_checkpoints/
+
+# --- Build & Distribution ---
+dist/
+build/
+*.egg-info/
+
+# --- Testing & Coverage ---
+.pytest_cache/
+.coverage
+htmlcov/
+
+
+# --- System/IDE ---
+.vscode/
+.idea/
+.DS_Store
+.trees/

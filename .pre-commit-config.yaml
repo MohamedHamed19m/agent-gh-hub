@@ -1,0 +1,18 @@
+repos:
+  # 1️⃣ Ruff: linting + formatting + import sorting (all-in-one!)
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.14.10
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
+
+  # 2️⃣ Mypy: static type checking
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.19.1
+    hooks:
+      - id: mypy
+        files: ^src/|^tests/
+        args: ["--explicit-package-bases"]
+        additional_dependencies:
+          - types-requests
