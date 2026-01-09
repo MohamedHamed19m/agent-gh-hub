@@ -50,6 +50,37 @@ class CommitsManager:
             return flattened
         return []
 
+    def get_commits_for_analysis(
+        self, branch: str, since: Optional[str] = None, limit: int = 100
+    ) -> List[Dict]:
+        """
+        Get commits with full API response for analysis purposes.
+        Does NOT flatten the response like list_commits().
+        """
+        if self.executor.repo:
+            api_path = f"repos/{self.executor.repo}/commits"
+        else:
+            api_path = "repos/:owner/:repo/commits"
+
+        params = [
+            "api",
+            "--method",
+            "GET",
+            api_path,
+            "-F",
+            f"sha={branch}",
+            "-F",
+            f"per_page={limit}",
+        ]
+
+        if since:
+            params.extend(["-F", f"since={since}"])
+
+        result = self.executor.execute(params, parse_json=True)
+        if isinstance(result, list):
+            return result
+        return []
+
     def search_commits(self, query: str, limit: int = 10) -> List[Dict]:
         """Search commits (using search api)"""
         q = f"{query}"

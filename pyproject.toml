@@ -1,13 +1,41 @@
 [project]
 name = "gh-wrapper"
 version = "0.1.0"
-description = "Python wrapper around GitHub CLI"
+description = "A Pythonic wrapper around the GitHub CLI (gh), optimized for AI agents and automation"
+readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
     "pydantic>=2.0.0",
-    "rich>=13.0.0",
     "click>=8.1.0",
     "python-dateutil>=2.8.0",
+]
+authors = [
+    { name = "Mohamed Ahmed Hamed" }
+]
+
+keywords = [
+    "github",
+    "gh",
+    "cli",
+    "automation",
+    "ai-agents",
+    "enterprise",
+    "sso",
+]
+
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: System Administrators",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+    "Environment :: Console",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development :: Version Control :: Git",
 ]
 
 [project.optional-dependencies]
@@ -20,6 +48,15 @@ dev = [
     "pre-commit>=3.5.0",
     "faker>=20.0.0",
 ]
+fancy = [
+    "rich>=13.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/MohamedHamed19m/gh-bridge"
+Repository = "https://github.com/MohamedHamed19m/gh-bridge"
+Issues = "https://github.com/MohamedHamed19m/gh-bridge/issues"
+
 
 [tool.uv]
 package = true
@@ -34,15 +71,18 @@ pythonpath = ["src"]
 python_files = ["test_*.py"]
 python_functions = ["test_*"]
 markers = [
-    "integration: marks tests as integration tests",
+    "integration: requires authenticated gh CLI session",
 ]
 addopts = [
     "--cov=src/gh_wrapper",
     "--cov-report=term-missing",
 ]
 
+
+
 [tool.ruff]
 line-length = 88
+fix = true
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "N", "W"]

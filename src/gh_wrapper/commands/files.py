@@ -16,7 +16,10 @@ class FileManager:
         else:
             api_path = f"repos/:owner/:repo/contents/{path}"
 
-        # params = ["api", api_path, "-F", f"ref={ref}"]
+        # Strip trailing slash if path is empty (though usually it's a file path)
+        api_path = api_path.rstrip("/")
+
+        # Using query parameter because -F ref=xxx causes 404 in some cases
         params = ["api", f"{api_path}?ref={ref}"]
 
         try:
@@ -49,9 +52,39 @@ class FileManager:
         else:
             api_path = f"repos/:owner/:repo/contents/{path}"
 
-        params = ["api", api_path, "-F", f"ref={ref}"]
+        # Strip trailing slash if path is empty
+        api_path = api_path.rstrip("/")
+
+        # Using query parameter because -F ref=xxx causes 404 for root
+        # directory in some cases
+        params = ["api", f"{api_path}?ref={ref}"]
 
         result = self.executor.execute(params, parse_json=True)
         if isinstance(result, list):
             return result
         return []  # If it's a file, it returns dict, or empty
+
+    def search_in_files(self, query: str, limit: int = 50) -> List[Dict]:
+        """Search code for a keyword using 'gh search code'"""
+        cmd = [
+            "search",
+            "code",
+            query,
+            "--repo",
+            self.executor.repo or "",
+            "--limit",
+            str(limit),
+            "--json",
+            "path,textMatches",
+        ]
+        result = self.executor.execute(cmd, parse_json=True)
+        if isinstance(result, list):
+            matches = []
+            for item in result:
+                snippet = None
+                if item.get("textMatches"):
+                    # Get the first match fragment
+                    snippet = item["textMatches"][0].get("fragment")
+                matches.append({"path": item.get("path"), "snippet": snippet})
+            return matches
+        return []

@@ -40,3 +40,25 @@ def test_search_commits(mock_executor: Any) -> None:
 
     assert len(results) == 1
     assert results[0]["sha"] == "search_result"
+
+
+def test_get_commits_for_analysis(
+    mock_executor: Any, sample_commit_response: Dict[str, Any]
+) -> None:
+    executor, mock_run = mock_executor
+    mock_run.reset_mock()
+
+    mock_run.return_value.stdout = json.dumps([sample_commit_response])
+
+    manager = CommitsManager(executor)
+    commits = manager.get_commits_for_analysis(branch="develop", since="2023-01-01")
+
+    assert len(commits) == 1
+    assert commits[0]["sha"] == "abc123456789"
+    # Full response should have "commit" key
+    assert "commit" in commits[0]
+
+    args, _ = mock_run.call_args
+    cmd = args[0]
+    assert any("sha=develop" in str(arg) for arg in cmd)
+    assert any("since=2023-01-01" in str(arg) for arg in cmd)

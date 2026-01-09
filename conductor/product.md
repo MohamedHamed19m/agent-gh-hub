@@ -11,6 +11,7 @@ To serve as the primary "eyes and ears" for autonomous coding agents, providing 
 
 # Key Features
 - **Feature Tracer:** Deep search for logic across branches and repositories.
+- **Repo Analysis:** High-level insights into commit volume trends, contributor activity, and time-based patterns.
 - **User Activity Analytics:** Insights into developer progress and intent.
 - **Repo Contextualizer:** High-level summary of repository structure and state for LLM context windows.
 - **Structured API Wrappers:** Pydantic-powered interfaces for Commits, PRs, and Files.
