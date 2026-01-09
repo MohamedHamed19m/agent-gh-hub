@@ -14,7 +14,3 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 
 
----
-
-## [~] Track: Create a FeatureTracer that searches across repos, commits, PRs, and contributors for any feature/topic.
-*Link: [./conductor/tracks/feature_tracer_20260109/](./conductor/tracks/feature_tracer_20260109/)*
