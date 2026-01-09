@@ -37,3 +37,28 @@ class PRManager:
         if isinstance(result, dict):
             return cast(Dict[str, Any], result)
         return {}
+
+    def get_pr_diff(self, number: int) -> str:
+        """Get PR diff in patch format"""
+        cmd = [
+            "pr",
+            "diff",
+            str(number),
+            "--patch",
+        ]
+        result = self.executor.execute(cmd)
+        # The result is expected to be a string containing the diff
+        return str(result)
+
+    def get_pr_diff_against_branch(self, number: int, target_branch: str) -> str:
+        """Get PR diff against a specific target branch in patch format"""
+        cmd = [
+            "pr",
+            "diff",
+            str(number),
+            "--base",
+            target_branch,
+            "--patch",
+        ]
+        result = self.executor.execute(cmd)
+        return str(result)

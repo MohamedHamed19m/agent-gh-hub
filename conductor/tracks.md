@@ -14,7 +14,7 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-## [ ] Track: implement new feature called pr_review
+## [~] Track: implement new feature called pr_review
 *Link: [./conductor/tracks/pr_review_20260109/](./conductor/tracks/pr_review_20260109/)*
 
 
