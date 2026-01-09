@@ -39,7 +39,8 @@ class RepoManager:
 
         Returns:
             A dictionary containing 'default_branch', 'description',
-            and 'latest_release'.
+            'latest_release', 'stargazerCount', 'forkCount', 'isFork',
+            'isArchived', and 'topics'.
         """
         repo_target = self.executor.repo or ":owner/:repo"
         params = [
@@ -47,7 +48,7 @@ class RepoManager:
             "view",
             repo_target,
             "--json",
-            "defaultBranchRef,description,latestRelease",
+            "defaultBranchRef,description,latestRelease,stargazerCount,forkCount,isFork,isArchived,repositoryTopics",
         ]
         result = self.executor.execute(params, parse_json=True)
         if isinstance(result, dict):
@@ -59,6 +60,13 @@ class RepoManager:
                 "latest_release": (result.get("latestRelease") or {}).get(
                     "tagName", "None"
                 ),
+                "stars": result.get("stargazerCount", 0),
+                "forks": result.get("forkCount", 0),
+                "is_fork": result.get("isFork", False),
+                "is_archived": result.get("isArchived", False),
+                "topics": [t.get("name") for t in result.get("repositoryTopics", [])]
+                if isinstance(result.get("repositoryTopics"), list)
+                else [],
             }
         return {}
 
