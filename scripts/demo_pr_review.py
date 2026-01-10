@@ -3,8 +3,8 @@ from rich.markdown import Markdown
 from rich.panel import Panel
 from rich.table import Table
 
-from gh_wrapper.core.executor import GHExecutor
 from gh_wrapper.commands.pull_requests import PRManager
+from gh_wrapper.core.executor import GHExecutor
 from gh_wrapper.features.pr_review_analyzer import PrReviewAnalyzer
 from gh_wrapper.models.pr_review import PrReviewInput
 
@@ -31,7 +31,8 @@ def demo_pr_review() -> None:
 
     try:
         # 2. Find the latest open PR
-        with console.status(f"[bold green]Fetching latest open PR from {target_repo}..."):
+        msg = f"[bold green]Fetching latest open PR from {target_repo}..."
+        with console.status(msg):
             latest_prs = pr_manager.list_prs(state="open", limit=1, repo=target_repo)
 
         if not latest_prs:
@@ -41,21 +42,19 @@ def demo_pr_review() -> None:
         latest_pr = latest_prs[0]
         pr_number = latest_pr["number"]
         pr_title = latest_pr["title"]
-        
+
         console.print(f"[bold green]Found PR #{pr_number}:[/] {pr_title}")
 
         # 3. Analyze the PR
-        pr_input = PrReviewInput(
-            repo_name=target_repo,
-            pr_id=pr_number
-        )
+        pr_input = PrReviewInput(repo_name=target_repo, pr_id=pr_number)
 
-        with console.status(f"[bold green]Analyzing PR #{pr_number}... (fetching diffs and patterns)"):
+        msg = f"[bold green]Analyzing PR #{pr_number}... (fetching diffs)"
+        with console.status(msg):
             result = analyzer.analyze_pr(pr_input)
 
         # 4. Display results
         markdown_report = analyzer.format_as_markdown(result)
-        
+
         console.print("\n[bold]Review Report:[/]")
         console.print(
             Panel(
@@ -72,10 +71,9 @@ def demo_pr_review() -> None:
         metrics_table.add_column("Value", style="cyan")
 
         for key, value in result.metrics.items():
-             metrics_table.add_row(key.replace("_", " ").title(), str(value))
-        
-        console.print(metrics_table)
+            metrics_table.add_row(key.replace("_", " ").title(), str(value))
 
+        console.print(metrics_table)
 
     except Exception as e:
         console.print(f"\n[bold red]❌ Error during PR review:[/]\n[dim]{e}[/]")

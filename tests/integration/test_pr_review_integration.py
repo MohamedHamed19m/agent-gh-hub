@@ -31,11 +31,7 @@ def test_pr_review_integration_real_repo() -> None:
     # We don't have owner/repo easily available here without parsing,
     # but analyze_pr doesn't strictly use it for logic, only for title.
     # The executor handles the actual repo context.
-    pr_input = PrReviewInput(
-        repo_name="this-repo",
-        pr_id=pr_id,
-        review_depth="full"
-    )
+    pr_input = PrReviewInput(repo_name="this-repo", pr_id=pr_id, review_depth="full")
 
     report = analyzer.analyze_pr(pr_input)
 
