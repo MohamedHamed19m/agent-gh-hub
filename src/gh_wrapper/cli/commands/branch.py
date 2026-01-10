@@ -6,10 +6,11 @@ Agent B: Implementation of TOON and Rich output.
 import sys
 from typing import Any
 
-import toon_format as toon
+import typer
 from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
+from toon import encode as toon_encode
 
 from gh_wrapper.core.executor import GHExecutor
 from gh_wrapper.features.branch_analytics import BranchAnalyzer
@@ -29,8 +30,7 @@ def handle_analyze(repo: str, branch: str, readable: bool = False) -> None:
             render_rich_branch(stats)
         else:
             # Default: TOON output
-            sys.stdout.write(toon.encode(stats.model_dump()))
-            sys.stdout.write("\n")
+            typer.echo(toon_encode(stats.model_dump()))
 
     except Exception as e:
         sys.stderr.write(f"Error: {str(e)}\n")

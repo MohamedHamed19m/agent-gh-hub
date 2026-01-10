@@ -1,4 +1,14 @@
-from .analysis import CommitAnalysisReport, ContributorStats, DailyStats, TimePatterns
+from .analysis import (
+    CommitAnalysisReport,
+    ContributorStats,
+    DailyStats,
+    RepoContextActivity,
+    RepoContextMetadata,
+    RepoContextReport,
+    RepoContextStats,
+    RepoContextStructureItem,
+    TimePatterns,
+)
 from .pr_review import (
     FileModification,
     Location,
@@ -20,6 +30,11 @@ __all__ = [
     "ContributorStats",
     "DailyStats",
     "TimePatterns",
+    "RepoContextReport",
+    "RepoContextMetadata",
+    "RepoContextStructureItem",
+    "RepoContextStats",
+    "RepoContextActivity",
     "FileMatch",
     "TraceCommit",
     "TracePR",

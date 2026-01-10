@@ -63,26 +63,24 @@ class TestWithKnownBranch:
         analyzer = RepoContextAnalyzer(executor)
 
         # Analyze context (works on current branch of executor)
-        context = analyzer.analyze_current_context()
+        report = analyzer.analyze_current_context()
 
         # Assert context structure
-        assert context is not None, "Context should not be None"
-        assert "structure" in context, "Context should have 'structure' key"
-        assert "metadata" in context, "Context should have 'metadata' key"
+        assert report is not None, "Report should not be None"
+        assert report.structure is not None, "Report should have 'structure'"
+        assert report.metadata is not None, "Report should have 'metadata'"
 
-        structure = context.get("structure", [])
-        assert len(structure) > 0, "Structure should not be empty"
+        assert len(report.structure) > 0, "Structure should not be empty"
 
-        print(f"✓ Found {len(structure)} items in repo structure")
-        print(f"✓ Metadata: {context.get('metadata', {})}")
+        print(f"✓ Found {len(report.structure)} items in repo structure")
+        print(f"✓ Metadata: {report.metadata}")
 
     def test_file_structure_contains_test_files(self, executor: GHExecutor) -> None:
         """Test that file structure includes our known test files."""
         analyzer = RepoContextAnalyzer(executor)
-        context = analyzer.analyze_current_context(branch=TEST_BRANCH)
+        report = analyzer.analyze_current_context(branch=TEST_BRANCH)
 
-        structure = context.get("structure", [])
-        found_files = {item["path"] for item in structure}
+        found_files = {item.path for item in report.structure}
 
         # Check for at least some of our test files
         for test_file in TEST_FILES.keys():
@@ -119,9 +117,9 @@ class TestWithKnownBranch:
 
         if recent_work:
             for commit in recent_work:
-                assert "sha" in commit, "Should have commit SHA"
-                assert "message" in commit, "Should have commit message"
-                print(f"✓ User commit: {commit['message']}")
+                assert commit.sha is not None, "Should have commit SHA"
+                assert commit.message is not None, "Should have commit message"
+                print(f"✓ User commit: {commit.message}")
         else:
             print("⚠ No commits found for user on test branch")
 

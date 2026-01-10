@@ -28,10 +28,10 @@ def test_pr_review_integration_real_repo() -> None:
 
     pr_id = prs[0]["number"]
 
-    # We don't have owner/repo easily available here without parsing,
-    # but analyze_pr doesn't strictly use it for logic, only for title.
     # The executor handles the actual repo context.
-    pr_input = PrReviewInput(repo_name="this-repo", pr_id=pr_id, review_depth="full")
+    # Use the real repo name from the executor if available
+    repo_name = executor.repo or "MohamedHamed19m/agent-gh-hub"
+    pr_input = PrReviewInput(repo_name=repo_name, pr_id=pr_id, review_depth="full")
 
     report = analyzer.analyze_pr(pr_input)
 
@@ -42,6 +42,6 @@ def test_pr_review_integration_real_repo() -> None:
 
     # Verify Markdown formatting
     markdown = analyzer.format_as_markdown(report)
-    assert "# PR Review for this-repo#" in markdown
+    assert f"PR Review for {repo_name}#" in markdown
     assert "## Summary" in markdown
     assert "## Metrics" in markdown

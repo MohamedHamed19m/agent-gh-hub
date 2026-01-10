@@ -4,15 +4,17 @@ Agent B: Implementation of TOON and Rich output.
 """
 
 import sys
-from typing import Dict, List
+from typing import List
 
-import toon_format as toon
+import typer
 from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
+from toon import encode as toon_encode
 
 from gh_wrapper.core.executor import GHExecutor
 from gh_wrapper.features.user_tracer import UserTracer
+from gh_wrapper.models.trace import TraceCommit
 
 
 def handle_trace_user(username: str, repo: str, readable: bool = False) -> None:
@@ -23,22 +25,23 @@ def handle_trace_user(username: str, repo: str, readable: bool = False) -> None:
     tracer = UserTracer(executor)
 
     try:
-        # trace_recent_work returns List[Dict]
+        # trace_recent_work returns List[TraceCommit]
         activity = tracer.trace_recent_work(username, repo)
 
         if readable:
             render_rich_user_trace(username, repo, activity)
         else:
             # Default: TOON output
-            sys.stdout.write(toon.encode(activity))
-            sys.stdout.write("\n")
+            # Convert list of models to list of dicts for encoding
+            data = [c.model_dump() for c in activity]
+            typer.echo(toon_encode(data))
 
     except Exception as e:
         sys.stderr.write(f"Error: {str(e)}\n")
         sys.exit(1)
 
 
-def render_rich_user_trace(username: str, repo: str, activity: List[Dict]) -> None:
+def render_rich_user_trace(username: str, repo: str, activity: List[TraceCommit]) -> None:
     """
     Render user activity results using Rich for humans.
     """
@@ -67,10 +70,10 @@ def render_rich_user_trace(username: str, repo: str, activity: List[Dict]) -> No
 
     for commit in activity:
         table.add_row(
-            commit.get("short_name", "N/A"),
-            commit.get("message", "N/A").split("\n")[0],
-            commit.get("branch", "N/A"),
-            commit.get("date", "N/A"),
+            commit.sha[:7],
+            commit.message.split("\n")[0],
+            commit.branch,
+            commit.date[:10],
         )
 
     console.print(table)

@@ -5,6 +5,7 @@ Agent B: Implementation of Markdown and Rich output.
 
 import sys
 
+import typer
 from rich.console import Console
 from rich.markdown import Markdown
 
@@ -33,8 +34,7 @@ def handle_review(repo: str, pr_id: int, readable: bool = False) -> None:
             console.print(Markdown(markdown_text))
         else:
             # Default: Plain Markdown for agents
-            sys.stdout.write(markdown_text)
-            sys.stdout.write("\n")
+            typer.echo(markdown_text)
 
     except Exception as e:
         sys.stderr.write(f"Error: {str(e)}\n")
