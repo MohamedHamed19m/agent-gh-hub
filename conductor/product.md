@@ -10,6 +10,7 @@ To serve as the primary "eyes and ears" for autonomous coding agents, providing 
 - CI/CD pipelines needing advanced GitHub CLI automation.
 
 # Key Features
+- **Unified CLI Interface:** A single entry point (`gh-bridge`) providing direct access to all features with agent-optimized (TOON/Markdown) and human-readable (Rich) modes.
 - **Feature Tracer:** Deep search for logic across branches and repositories.
 - **Repo Analysis:** High-level insights into commit volume trends, contributor activity, and time-based patterns.
 - **User Activity Analytics:** Insights into developer progress and intent.
