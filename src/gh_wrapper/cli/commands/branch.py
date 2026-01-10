@@ -1,5 +1,4 @@
-"""
-Handler for the 'analyze-branch' command.
+"""Handler for the 'analyze-branch' command.
 Agent B: Implementation of TOON and Rich output.
 """
 
@@ -17,9 +16,7 @@ from gh_wrapper.features.branch_analytics import BranchAnalyzer
 
 
 def handle_analyze(repo: str, branch: str, readable: bool = False) -> None:
-    """
-    Execute branch analysis and format output.
-    """
+    """Execute branch analysis and format output."""
     executor = GHExecutor(repo=repo)
     analyzer = BranchAnalyzer(executor)
 
@@ -38,9 +35,7 @@ def handle_analyze(repo: str, branch: str, readable: bool = False) -> None:
 
 
 def render_rich_branch(stats: Any) -> None:
-    """
-    Render branch analysis results using Rich for humans.
-    """
+    """Render branch analysis results using Rich for humans."""
     console = Console()
 
     console.print(

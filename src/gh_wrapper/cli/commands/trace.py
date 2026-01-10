@@ -1,11 +1,10 @@
-"""
-Handler for the 'trace' command.
+"""Handler for the 'trace' command.
 Agent B: Implementation of TOON and Rich output.
 """
 
 import os
 import sys
-from typing import Any, Optional
+from typing import Any
 
 import typer
 from rich.console import Console
@@ -17,11 +16,9 @@ from gh_wrapper.features.feature_tracer import FeatureTracer
 
 
 def handle_trace(
-    query: str, repos_str: Optional[str] = None, readable: bool = False
+    query: str, repos_str: str | None = None, readable: bool = False
 ) -> None:
-    """
-    Execute feature tracing and format output.
-    """
+    """Execute feature tracing and format output."""
     if repos_str:
         repos = [r.strip() for r in repos_str.split(",")]
     else:
@@ -52,9 +49,7 @@ def handle_trace(
 
 
 def render_rich_trace(report: Any) -> None:
-    """
-    Render trace results using Rich for humans.
-    """
+    """Render trace results using Rich for humans."""
     console = Console()
 
     console.print(

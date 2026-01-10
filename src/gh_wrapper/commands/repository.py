@@ -1,5 +1,5 @@
 import concurrent.futures
-from typing import Any, Dict, List, Optional, cast
+from typing import Any, cast
 
 from ..core.exceptions import GHCommandError
 from ..core.executor import GHExecutor
@@ -13,7 +13,7 @@ class RepoManager:
     # TODO: get_context() removed - orchestration logic belongs in
     # features/repo_context.py and will be implemented in a future track.
 
-    def list_branches(self, limit: int = 10) -> List[Dict[str, Any]]:
+    def list_branches(self, limit: int = 10) -> list[dict[str, Any]]:
         """Lists branches in the repository using GitHub API.
 
         Args:
@@ -21,6 +21,7 @@ class RepoManager:
 
         Returns:
             A list of branch dictionaries from the GitHub API.
+
         """
         if self.executor.repo:
             api_path = f"repos/{self.executor.repo}/branches"
@@ -31,16 +32,17 @@ class RepoManager:
         params = ["api", f"{api_path}?per_page={limit}"]
         result = self.executor.execute(params, parse_json=True)
         if isinstance(result, list):
-            return cast(List[Dict[str, Any]], result)
+            return cast(list[dict[str, Any]], result)
         return []
 
-    def get_repo_basics(self) -> Dict[str, Any]:
+    def get_repo_basics(self) -> dict[str, Any]:
         """Gets basic repository metadata using 'gh repo view'.
 
         Returns:
             A dictionary containing 'default_branch', 'description',
             'latest_release', 'stargazerCount', 'forkCount', 'isFork',
             'isArchived', and 'topics'.
+
         """
         repo_target = self.executor.repo or ":owner/:repo"
         params = [
@@ -70,7 +72,7 @@ class RepoManager:
             }
         return {}
 
-    def get_file_structure(self, branch: str) -> List[Dict[str, Any]]:
+    def get_file_structure(self, branch: str) -> list[dict[str, Any]]:
         """Gets the recursive file structure of a repository at a specific branch.
 
         Args:
@@ -78,6 +80,7 @@ class RepoManager:
 
         Returns:
             A list of dictionaries containing 'path', 'type', and 'sha' for each item.
+
         """
         params = [
             "api",
@@ -96,7 +99,7 @@ class RepoManager:
                 )
         return structure
 
-    def get_recent_commits(self, branch: str, limit: int = 5) -> List[Dict[str, Any]]:
+    def get_recent_commits(self, branch: str, limit: int = 5) -> list[dict[str, Any]]:
         """Gets recent commits for a specific branch.
 
         Args:
@@ -105,6 +108,7 @@ class RepoManager:
 
         Returns:
             A list of dictionaries containing 'sha', 'message', 'author', and 'date'.
+
         """
         params = [
             "api",
@@ -129,11 +133,12 @@ class RepoManager:
 
         Returns:
             The name of the default branch (e.g., 'main').
+
         """
         repo_basics = self.get_repo_basics()
         return str(repo_basics.get("default_branch", "main"))
 
-    def _fetch_branch_details(self, name: str) -> Optional[Dict[str, Any]]:
+    def _fetch_branch_details(self, name: str) -> dict[str, Any] | None:
         """Internal worker to fetch single branch details for threading.
 
         Args:
@@ -141,6 +146,7 @@ class RepoManager:
 
         Returns:
             Dictionary with branch info or None if failed.
+
         """
         if self.executor.repo:
             api_path = f"repos/{self.executor.repo}/branches/{name}"
@@ -161,7 +167,7 @@ class RepoManager:
             pass
         return None
 
-    def get_priority_branches(self, priority_names: List[str]) -> List[Dict[str, Any]]:
+    def get_priority_branches(self, priority_names: list[str]) -> list[dict[str, Any]]:
         """Gets details of priority branches by their names and returns their SHA.
 
         Uses threaded execution to fetch branches in parallel.
@@ -171,6 +177,7 @@ class RepoManager:
 
         Returns:
             A list of dictionaries for each found priority branch.
+
         """
         found_branches = []
 
@@ -188,7 +195,7 @@ class RepoManager:
 
         return found_branches
 
-    def get_latest_branches_graphql(self, scan_limit: int = 50) -> List[Dict[str, Any]]:
+    def get_latest_branches_graphql(self, scan_limit: int = 50) -> list[dict[str, Any]]:
         """Gets the latest branches using GraphQL to minimize API calls.
 
         Args:
@@ -196,6 +203,7 @@ class RepoManager:
 
         Returns:
             A list of dictionaries containing branch name, SHA, and committed date.
+
         """
         query = """
         query($owner: String!, $name: String!, $first: Int!) {
@@ -256,7 +264,7 @@ class RepoManager:
                 )
         return branches
 
-    def get_combined_branches(self, scan_limit: int = 50) -> List[Dict[str, Any]]:
+    def get_combined_branches(self, scan_limit: int = 50) -> list[dict[str, Any]]:
         """Combines priority branches and latest branches, avoiding duplicates.
 
         Args:
@@ -264,6 +272,7 @@ class RepoManager:
 
         Returns:
             A combined list of priority and recently updated branches.
+
         """
         priority_names = ["main", "master", "master_integration"]
 

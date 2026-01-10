@@ -1,10 +1,8 @@
-"""
-Handler for the 'scan' command.
+"""Handler for the 'scan' command.
 Agent B: Implementation of TOON and Rich output.
 """
 
 import sys
-from typing import Optional
 
 import typer
 from rich.console import Console
@@ -18,12 +16,8 @@ from gh_wrapper.features.repo_context import RepoContextAnalyzer
 from gh_wrapper.models.analysis import RepoContextReport
 
 
-def handle_scan(
-    repo: str, branch: Optional[str] = None, readable: bool = False
-) -> None:
-    """
-    Execute repository scanning and format output.
-    """
+def handle_scan(repo: str, branch: str | None = None, readable: bool = False) -> None:
+    """Execute repository scanning and format output."""
     executor = GHExecutor(repo=repo)
     analyzer = RepoContextAnalyzer(executor)
 
@@ -43,9 +37,7 @@ def handle_scan(
 
 
 def render_rich_scan(report: RepoContextReport) -> None:
-    """
-    Render scan results using Rich for humans.
-    """
+    """Render scan results using Rich for humans."""
     console = Console()
 
     # Header

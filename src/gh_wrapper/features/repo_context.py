@@ -20,8 +20,7 @@ logger = logging.getLogger(__name__)
 
 
 class RepoContextAnalyzer:
-    """
-    Feature layer for generating AI-optimized repository snapshots.
+    """Feature layer for generating AI-optimized repository snapshots.
 
     Composes RepoManager, PRManager, and FileManager to aggregate
     metadata, file structure, activity, and documentation into a
@@ -53,9 +52,7 @@ class RepoContextAnalyzer:
     ]
 
     def __init__(self, executor: GHExecutor):
-        """
-        Initialize with core dependencies.
-        """
+        """Initialize with core dependencies."""
         self.executor = executor
         self.repo_manager = RepoManager(executor)
         self.pr_manager = PRManager(executor)
@@ -63,9 +60,7 @@ class RepoContextAnalyzer:
         self.commits_manager = CommitsManager(executor)
 
     def analyze_current_context(self, branch: str | None = None) -> RepoContextReport:
-        """
-        Generate a comprehensive snapshot of the repository state.
-        """
+        """Generate a comprehensive snapshot of the repository state."""
         # Phase 1: Metadata
         raw_metadata = self.repo_manager.get_repo_basics()
         default_branch = branch or raw_metadata.get("default_branch", "main")
@@ -105,9 +100,7 @@ class RepoContextAnalyzer:
         )
 
     def _get_readme_snippet(self, branch: str, limit: int = 2000) -> str | None:
-        """
-        Fetch and truncate README.md.
-        """
+        """Fetch and truncate README.md."""
         content = self.file_manager.get_file_content("README.md", ref=branch)
         if not content:
             return None
@@ -124,9 +117,7 @@ class RepoContextAnalyzer:
         )
 
     def _get_summarized_activity(self, branch: str) -> dict[str, Any]:
-        """
-        Fetch and format recent commits, PRs, and aggregate stats.
-        """
+        """Fetch and format recent commits, PRs, and aggregate stats."""
         # 1. Fetch recent commits (limit 10)
         raw_commits = self.commits_manager.get_commits_for_analysis(
             branch=branch, limit=10
@@ -185,9 +176,7 @@ class RepoContextAnalyzer:
     def _get_smart_structure(
         self, branch: str, max_depth: int = 2, max_per_level: int = 20
     ) -> list[dict[str, Any]]:
-        """
-        Get file structure with smart truncation and priority preservation.
-        """
+        """Get file structure with smart truncation and priority preservation."""
         raw_tree = self.repo_manager.get_file_structure(branch)
         if not raw_tree:
             return []

@@ -1,5 +1,5 @@
 import re
-from typing import Dict, List, Literal, cast
+from typing import Literal, cast
 
 from gh_wrapper.commands.pull_requests import PRManager
 from gh_wrapper.models.pr_review import (
@@ -19,9 +19,7 @@ class PrReviewAnalyzer:
         self.pr_manager = pr_manager
 
     def analyze_pr(self, pr_input: PrReviewInput) -> PrReviewOutput:
-        """
-        Analyzes a Pull Request to generate a summary and suggested comments.
-        """
+        """Analyzes a Pull Request to generate a summary and suggested comments."""
         # Fetch raw PR data including diffs
         if pr_input.target_branch:
             pr_diff_patch = self.pr_manager.get_pr_diff_against_branch(
@@ -34,8 +32,8 @@ class PrReviewAnalyzer:
 
         # --- Diff Parsing Logic ---
         summary_data = PrSummary(modified_files=[], key_diffs={})
-        suggested_comments_data: List[SuggestedComment] = []
-        metrics_data: Dict[str, int] = {
+        suggested_comments_data: list[SuggestedComment] = []
+        metrics_data: dict[str, int] = {
             "lines_added": 0,
             "lines_deleted": 0,
             "files_changed": 0,
@@ -114,9 +112,7 @@ class PrReviewAnalyzer:
         )
 
     def format_as_markdown(self, pr_review_output: PrReviewOutput) -> str:
-        """
-        Formats the PR review output into a human-readable Markdown string.
-        """
+        """Formats the PR review output into a human-readable Markdown string."""
         params = pr_review_output.input_params
         markdown_output = f"# PR Review for {params.repo_name}#{params.pr_id}\n\n"
 

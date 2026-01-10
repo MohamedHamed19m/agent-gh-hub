@@ -1,6 +1,6 @@
 import logging
 from collections import Counter
-from typing import List, Optional, Union, cast
+from typing import cast
 
 from ..commands.commits import CommitsManager
 from ..commands.files import FileManager
@@ -18,29 +18,31 @@ logger = logging.getLogger(__name__)
 
 
 class FeatureTracer:
-    """
-    Feature layer for cross-sectional feature tracing across multiple repositories.
+    """Feature layer for cross-sectional feature tracing across
+
+
+    multiple repositories.
+
+
     """
 
     def __init__(self) -> None:
-        """
-        Initialize a stateless FeatureTracer.
-        """
+        """Initialize a stateless FeatureTracer."""
+
         pass
 
     def trace_feature(
         self,
         keyword: str,
-        repos: Union[str, List[str]],
-        branches: Optional[List[str]] = None,
-        since: Optional[str] = None,
+        repos: str | list[str],
+        branches: list[str] | None = None,
+        since: str | None = None,
         search_files: bool = True,
         search_commits: bool = True,
         search_prs: bool = True,
         max_commits_per_branch: int = 100,
     ) -> MultiRepoFeatureTrace:
-        """
-        Trace a keyword across specified repositories and branches.
+        """Trace a keyword across specified repositories and branches.
 
         Example:
             >>> tracer = FeatureTracer()
@@ -59,6 +61,7 @@ class FeatureTracer:
 
         Returns:
             A MultiRepoFeatureTrace Pydantic model.
+
         """
         if isinstance(repos, str):
             repos = [repos]
@@ -159,14 +162,14 @@ class FeatureTracer:
         return multi_trace
 
     def format_as_markdown(self, report: MultiRepoFeatureTrace) -> str:
-        """
-        Formats the multi-repo feature trace report as a Markdown string.
+        """Formats the multi-repo feature trace report as a Markdown string.
 
         Args:
             report: The MultiRepoFeatureTrace to format.
 
         Returns:
             A formatted Markdown string summary.
+
         """
         lines = [f"# Feature Trace Report: {report.keyword}", ""]
 
@@ -195,8 +198,8 @@ class FeatureTracer:
         return "\n".join(lines)
 
     def _enrich_trace_data(self, trace: FeatureTrace) -> None:
-        """
-        Aggregate contributor stats and calculate metadata for a single repo trace.
+        """Aggregate contributor stats and calculate metadata for a
+        single repo trace.
         """
         commit_authors = [c.author for c in trace.commit_matches]
         pr_authors = [pr.author for pr in trace.pr_matches]

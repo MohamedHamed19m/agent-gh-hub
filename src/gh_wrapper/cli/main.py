@@ -1,9 +1,8 @@
-"""
-CLI Implementation using Typer.
+"""CLI Implementation using Typer.
 Agent B: Implementation of infrastructure and commands.
 """
 
-from typing import Annotated, Optional
+from typing import Annotated
 
 import typer
 
@@ -20,7 +19,7 @@ app = typer.Typer(
 @app.command()
 def scan(
     repo: Annotated[str, typer.Argument(help="Repository name (owner/repo)")],
-    branch: Annotated[Optional[str], typer.Option(help="Branch name")] = None,
+    branch: Annotated[str | None, typer.Option(help="Branch name")] = None,
     readable: Annotated[
         bool, typer.Option("--readable", help="Human-readable output")
     ] = False,
@@ -36,7 +35,7 @@ def scan(
 def trace(
     query: Annotated[str, typer.Argument(help="Feature/code search query")],
     repos: Annotated[
-        Optional[str], typer.Option(help="Comma-separated repository names")
+        str | None, typer.Option(help="Comma-separated repository names")
     ] = None,
     readable: Annotated[
         bool, typer.Option("--readable", help="Human-readable output")

@@ -1,7 +1,7 @@
 import logging
 from collections import Counter
 from datetime import datetime, timedelta
-from typing import Any, Dict, List
+from typing import Any
 
 from ..commands.commits import CommitsManager
 from ..models.analysis import (
@@ -15,8 +15,7 @@ logger = logging.getLogger(__name__)
 
 
 class RepoAnalyzer:
-    """
-    Feature layer for repository analysis and insights.
+    """Feature layer for repository analysis and insights.
 
     This class orchestrates complex logic by fetching raw commit data via CommitsManager
     and transforming it into structured insights and human-readable reports.
@@ -25,22 +24,22 @@ class RepoAnalyzer:
         >>> analyzer = RepoAnalyzer(commits_manager)
         >>> report = analyzer.analyze_commit_patterns(["main"], days_back=30)
         >>> print(analyzer.format_as_markdown(report))
+
     """
 
     def __init__(self, commits_manager: CommitsManager):
-        """
-        Initialize the RepoAnalyzer.
+        """Initialize the RepoAnalyzer.
 
         Args:
             commits_manager: An instance of CommitsManager to fetch commit data.
+
         """
         self.commits_manager = commits_manager
 
     def analyze_commit_patterns(
-        self, branches: List[str], days_back: int = 30
+        self, branches: list[str], days_back: int = 30
     ) -> CommitAnalysisReport:
-        """
-        Orchestrates commit pattern analysis across multiple branches.
+        """Orchestrates commit pattern analysis across multiple branches.
 
         Args:
             branches: A list of branch names to analyze.
@@ -51,6 +50,7 @@ class RepoAnalyzer:
 
         Raises:
             ValueError: If branches list is empty or days_back is not positive.
+
         """
         if not branches:
             raise ValueError("At least one branch must be provided.")
@@ -59,7 +59,7 @@ class RepoAnalyzer:
 
         since = (datetime.now() - timedelta(days=days_back)).isoformat()
 
-        all_commits: List[Dict[str, Any]] = []
+        all_commits: list[dict[str, Any]] = []
         seen_shas = set()
 
         for branch in branches:
@@ -91,9 +91,7 @@ class RepoAnalyzer:
         )
 
     def format_as_markdown(self, report: CommitAnalysisReport) -> str:
-        """
-        Formats the analysis report as a human-readable Markdown string
-        """
+        """Formats the analysis report as a human-readable Markdown string"""
         lines = [
             "# Repository Analysis Report",
             f"**Repository:** {report.repository}",
@@ -153,8 +151,8 @@ class RepoAnalyzer:
         return "\n".join(lines)
 
     def _calculate_daily_trend(
-        self, all_commits: List[Dict[str, Any]]
-    ) -> List[DailyStats]:
+        self, all_commits: list[dict[str, Any]]
+    ) -> list[DailyStats]:
         """Helper to calculate daily commit counts"""
         date_counts: Counter[str] = Counter()
         for c in all_commits:
@@ -169,8 +167,8 @@ class RepoAnalyzer:
         return [DailyStats(date=d, commit_count=date_counts[d]) for d in sorted_dates]
 
     def _analyze_contributors(
-        self, all_commits: List[Dict[str, Any]]
-    ) -> List[ContributorStats]:
+        self, all_commits: list[dict[str, Any]]
+    ) -> list[ContributorStats]:
         """Helper to analyze contributor activity"""
         author_counts: Counter[str] = Counter()
         for c in all_commits:
@@ -189,7 +187,7 @@ class RepoAnalyzer:
             )
         return stats
 
-    def _analyze_time_patterns(self, all_commits: List[Dict[str, Any]]) -> TimePatterns:
+    def _analyze_time_patterns(self, all_commits: list[dict[str, Any]]) -> TimePatterns:
         """Helper to analyze hourly and weekday patterns"""
         hour_counts: Counter[int] = Counter()
         weekday_counts: Counter[str] = Counter()

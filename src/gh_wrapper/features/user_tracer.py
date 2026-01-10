@@ -11,14 +11,10 @@ logger = logging.getLogger(__name__)
 
 
 class UserTracer:
-    """
-    Feature layer for tracing user activity across a repository.
-    """
+    """Feature layer for tracing user activity across a repository."""
 
     def __init__(self, executor: GHExecutor):
-        """
-        Initialize with core dependencies.
-        """
+        """Initialize with core dependencies."""
         self.executor = executor
         self.user_manager = UserManager(executor)
         self.repo_manager = RepoManager(executor)
@@ -33,9 +29,7 @@ class UserTracer:
         commit_depth_per_branch: int = 100,
         branch: str | None = None,
     ) -> list[TraceCommit]:
-        """
-        Traces recent work for a user within a given repository.
-        """
+        """Traces recent work for a user within a given repository."""
         self.executor.repo = repo
 
         # [1]. Identify target branches

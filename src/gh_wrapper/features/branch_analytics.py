@@ -1,4 +1,4 @@
-from typing import Any, Dict, Optional
+from typing import Any
 
 from pydantic import BaseModel, Field
 
@@ -11,31 +11,27 @@ class BranchStats(BaseModel):
 
     branch: str
     total_commits: int
-    last_commit: Optional[Dict[str, Any]] = None
-    contributors: Dict[str, int] = Field(default_factory=dict)
+    last_commit: dict[str, Any] | None = None
+    contributors: dict[str, int] = Field(default_factory=dict)
     health_score: float = 0.0
 
 
 class BranchAnalyzer:
-    """
-    Analyzes branch activity and health using the GitHub CLI.
-    """
+    """Analyzes branch activity and health using the GitHub CLI."""
 
     def __init__(self, executor: GHExecutor):
         self.executor = executor
         self.commits_manager = CommitsManager(executor)
 
     def analyze_branch(self, branch: str, limit: int = 100) -> BranchStats:
-        """
-        Analyzes the given branch and returns a BranchStats object.
-        """
+        """Analyzes the given branch and returns a BranchStats object."""
         commits = self.commits_manager.list_commits(branch=branch, limit=limit)
 
         if not commits:
             return BranchStats(branch=branch, total_commits=0)
 
         total_commits = len(commits)
-        contributors: Dict[str, int] = {}
+        contributors: dict[str, int] = {}
 
         # Last commit is usually the first in the list
         first_commit = commits[0]

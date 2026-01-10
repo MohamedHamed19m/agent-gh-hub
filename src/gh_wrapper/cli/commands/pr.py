@@ -1,5 +1,4 @@
-"""
-Handler for the 'review-pr' command.
+"""Handler for the 'review-pr' command.
 Agent B: Implementation of Markdown and Rich output.
 """
 
@@ -16,9 +15,7 @@ from gh_wrapper.models.pr_review import PrReviewInput
 
 
 def handle_review(repo: str, pr_id: int, readable: bool = False) -> None:
-    """
-    Execute PR review and format output.
-    """
+    """Execute PR review and format output."""
     executor = GHExecutor(repo=repo)
     pr_manager = PRManager(executor)
     analyzer = PrReviewAnalyzer(pr_manager)

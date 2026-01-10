@@ -1,10 +1,8 @@
-"""
-Handler for the 'trace-user' command.
+"""Handler for the 'trace-user' command.
 Agent B: Implementation of TOON and Rich output.
 """
 
 import sys
-from typing import List
 
 import typer
 from rich.console import Console
@@ -18,9 +16,7 @@ from gh_wrapper.models.trace import TraceCommit
 
 
 def handle_trace_user(username: str, repo: str, readable: bool = False) -> None:
-    """
-    Execute user activity tracing and format output.
-    """
+    """Execute user activity tracing and format output."""
     executor = GHExecutor(repo=repo)
     tracer = UserTracer(executor)
 
@@ -42,11 +38,9 @@ def handle_trace_user(username: str, repo: str, readable: bool = False) -> None:
 
 
 def render_rich_user_trace(
-    username: str, repo: str, activity: List[TraceCommit]
+    username: str, repo: str, activity: list[TraceCommit]
 ) -> None:
-    """
-    Render user activity results using Rich for humans.
-    """
+    """Render user activity results using Rich for humans."""
     console = Console()
 
     console.print(

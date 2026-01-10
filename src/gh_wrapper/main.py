@@ -1,5 +1,4 @@
-"""
-Main entry point for the gh-bridge CLI.
+"""Main entry point for the gh-bridge CLI.
 Agent B: Implementation to unblock Phase 2.
 """
 
@@ -15,9 +14,7 @@ console = Console(stderr=True)
 
 
 def main() -> None:
-    """
-    Main execution function.
-    """
+    """Main execution function."""
     try:
         app()
     except GHWrapperError as e:

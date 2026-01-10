@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional, cast
+from typing import Any, cast
 
 from ..core.executor import GHExecutor
 
@@ -8,8 +8,8 @@ class CommitsManager:
         self.executor = executor
 
     def list_commits(
-        self, branch: str = "main", limit: int = 10, path: Optional[str] = None
-    ) -> List[Dict]:
+        self, branch: str = "main", limit: int = 10, path: str | None = None
+    ) -> list[dict]:
         """List commits from a branch, optionally filtering by path"""
         # Use :owner/:repo placeholders which gh CLI resolves if local,
         # or use executor.repo if explicit
@@ -51,10 +51,9 @@ class CommitsManager:
         return []
 
     def get_commits_for_analysis(
-        self, branch: str, since: Optional[str] = None, limit: int = 100
-    ) -> List[Dict]:
-        """
-        Get commits with full API response for analysis purposes.
+        self, branch: str, since: str | None = None, limit: int = 100
+    ) -> list[dict]:
+        """Get commits with full API response for analysis purposes.
         Does NOT flatten the response like list_commits().
         """
         if self.executor.repo:
@@ -81,7 +80,7 @@ class CommitsManager:
             return result
         return []
 
-    def search_commits(self, query: str, limit: int = 10) -> List[Dict]:
+    def search_commits(self, query: str, limit: int = 10) -> list[dict]:
         """Search commits (using search api)"""
         q = f"{query}"
         if self.executor.repo:
@@ -100,10 +99,10 @@ class CommitsManager:
         result = self.executor.execute(params, parse_json=True)
 
         if isinstance(result, dict):
-            return cast(List[Dict[str, Any]], result.get("items", []))
+            return cast(list[dict[str, Any]], result.get("items", []))
         return []
 
-    def get_commit_details(self, sha: str) -> Dict:
+    def get_commit_details(self, sha: str) -> dict:
         """Get details of a specific commit by SHA"""
         if self.executor.repo:
             api_path = f"repos/{self.executor.repo}/commits/{sha}"
@@ -114,12 +113,12 @@ class CommitsManager:
         result = self.executor.execute(params, parse_json=True)
 
         if isinstance(result, dict):
-            return cast(Dict[str, Any], result)
+            return cast(dict[str, Any], result)
         return {}
 
     def fetch_commits_from_branch(
         self, branch_name: str, user_search_term: str, limit_per_branch: int
-    ) -> List[Dict]:
+    ) -> list[dict]:
         """Fetch commits from a specific branch filtered by user search term"""
         local_results = []
         search_term_lower = user_search_term.lower()
@@ -178,7 +177,7 @@ class CommitsManager:
 
     def get_user_commits_global_search(
         self, repo: str, username: str, limit: int = 10
-    ) -> List[Dict]:
+    ) -> list[dict]:
         """Fallback: Search commits globally in the repository for a user"""
         cmd = [
             "search",
