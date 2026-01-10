@@ -83,6 +83,7 @@ addopts = [
 [tool.ruff]
 line-length = 88
 fix = true
+exclude = [".venv", ".trees", ".mypy_cache", ".pytest_cache"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "N", "W"]
