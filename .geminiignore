@@ -1,14 +1,51 @@
-# Ignore the environment and git history
+# Dependencies
+node_modules/
+vendor/
+packages/
 .venv/
-.git/
+env/
 
-# Ignore build artifacts
+# Build outputs and caches
 dist/
 build/
+out/
+.next/
+.cache/
+*.pyc
+
+# Version control and environment
+.git/
+.svn/
+.hg/
+.env*
+*.log
+
+# Large assets (Images/Video/Binaries)
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+*.pdf
+*.zip
+*.tar.gz
+
+# IDE settings
+.vscode/
+.idea/
+.DS_Store
 
 
-# Ignore documentation assets if they are just images
-docs/images/
+# Python linting and type-checking caches
+.mypy_cache/
+.ruff_cache/
 
-# Ignore lock files
+# Testing artifacts
+.pytest_cache/
+.coverage
+
+# Git Worktree metadata (if these are admin files)
+.trees/
+
+# Lock files
 uv.lock

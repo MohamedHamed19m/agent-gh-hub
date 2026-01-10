@@ -1,6 +1,8 @@
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 from pydantic import BaseModel, Field
+
+from .trace import TraceCommit, TracePR
 
 
 class ContributorStats(BaseModel):
@@ -32,3 +34,42 @@ class CommitAnalysisReport(BaseModel):
     daily_trends: List[DailyStats]
     contributors: List[ContributorStats]
     time_patterns: TimePatterns
+
+
+class RepoContextMetadata(BaseModel):
+    default_branch: str
+    description: Optional[str] = None
+    latest_release: Optional[str] = None
+    stars: Optional[int] = 0
+    forks: Optional[int] = 0
+    is_fork: bool = False
+    is_archived: bool = False
+    topics: List[str] = []
+
+
+class RepoContextStructureItem(BaseModel):
+    path: str
+    type: str
+    sha: Optional[str] = None
+    priority: bool = False
+    count: Optional[int] = None  # For truncated items
+
+
+class RepoContextStats(BaseModel):
+    commits_last_7d: int
+    open_prs_count: int
+    active_contributors_last_7d: int
+
+
+class RepoContextActivity(BaseModel):
+    recent_commits: List[TraceCommit] = []
+    open_pull_requests: List[TracePR] = []
+    stats: RepoContextStats
+
+
+class RepoContextReport(BaseModel):
+    target: str
+    metadata: RepoContextMetadata
+    structure: List[RepoContextStructureItem]
+    activity: RepoContextActivity
+    readme_snippet: Optional[str] = None

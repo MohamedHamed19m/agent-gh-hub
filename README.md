@@ -3,7 +3,6 @@
 A robust, Pythonic wrapper around the **GitHub CLI (`gh`)**, engineered specifically for **AI Agents** (like Claude, Gemini, and GPT) and high-automation environments.
 
 [![Tests](https://github.com/MohamedHamed19m/agent-gh-hub/actions/workflows/test.yml/badge.svg)](https://github.com/MohamedHamed19m/agent-gh-hub/actions/workflows/test.yml)
-
 [![Python Version](https://img.shields.io/badge/python-3.10%2B-blue)](https://python.org)
 [![Managed by uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
 
@@ -11,137 +10,57 @@ A robust, Pythonic wrapper around the **GitHub CLI (`gh`)**, engineered specific
 
 ## 🎯 Why gh-bridge?
 
-In many **Enterprise environments**, security policies often restrict or disable the use of Personal Access Tokens (both Classic and Fine-grained). This creates a "token wall" where traditional libraries like `PyGithub` or `ghapi` fail because they cannot navigate SAML/SSO requirements.
+In many **Enterprise environments**, security policies often restrict Personal Access Tokens. `gh-bridge` solves this by acting as a **Pythonic wrapper for the GitHub CLI (`gh`)**, leveraging your existing authenticated CLI session to navigate SAML/SSO requirements seamlessly.
 
-`gh-bridge` solves this by acting as a **Pythonic wrapper for the GitHub CLI (`gh`)**. Instead of fighting with API tokens, it leverages your existing CLI authentication state.
-
-### 🔐 The Enterprise Advantage
-* **SAML/SSO Compatibility:** If you can log in via `gh auth login` in your terminal, this package works. It inherits the browser-based SSO session seamlessly.
-* **No Manual Configuration:** There is no need to manually set `GH_HOST` or `GH_ORG` variables for basic usage; the library automatically inherits the authentication context and host settings from your active `gh` CLI session.
-* **Bypasses Token Restrictions:** Works in environments where creating/using personal tokens is strictly blocked by organization policy.
-* **Zero Credential Management:** No need to store sensitive tokens in `.env` files or CI secrets; it uses the local system's secure credential store.
-* **AI-Native Output:** While the raw CLI returns text, `gh-bridge` parses everything into structured JSON, optimized for LLM context windows and automated agents.
+- **SAML/SSO Compatibility:** Inherits your browser-based SSO session.
+- **Zero Credential Management:** Uses the local system's secure credential store.
+- **AI-Native Output:** Parses CLI output into structured JSON/TOON for LLM context windows.
 
 ## 🛠️ Key Features
 
-* **📊 Branch Analytics:** Analyze commit activity, contributors, and branch health metrics (`gh_wrapper.features.branch_analytics`).
-* **🔍 Feature Tracer:** Search for logic or snippets across multiple repositories and branches (`gh_wrapper.features.feature_tracer`).
-* **👤 User Activity Analytics:** Trace a developer's recent work to understand intent and progress (`gh_wrapper.features.user_tracer`).
-* **📂 Repo Contextualizer:** One-call "Big Picture" view (Files, PRs, Branches, and README) for LLM context windows (`gh_wrapper.features.repo_context`).
-* **📝 Core Commands:** specialized wrappers for Commits, Pull Requests, Files, and Repository management.
-* **⚡ Built with `uv`:** Lightning-fast dependency management and environment setup.
+- **📊 Branch Analytics:** Analyze activity and health metrics.
+- **🔍 Feature Tracer:** Search logic across multiple repositories.
+- **🤖 PR Review:** Automated review suggestions and summaries.
+- **👤 User Activity:** Trace a developer's recent progress and intent.
+- **📂 Repo Contextualizer:** "Big Picture" view for AI agents.
 
 ## 🚀 Quick Start
 
 ### Prerequisites
-1. [GitHub CLI](https://cli.github.com/) installed and authenticated (`gh auth login`). 
-   > **Tip:** Verify your connection by running `gh auth status`.
+1. [GitHub CLI](https://cli.github.com/) installed and authenticated (`gh auth login`).
 2. [uv](https://github.com/astral-sh/uv) installed.
 
-### Setup
+### Installation
 ```bash
-# Clone the repo
 git clone https://github.com/MohamedHamed19m/gh-bridge
 cd gh-bridge
-
-# Sync environment
 uv sync --all-extras
 ```
 
-### Usage
+## 📖 Documentation
 
-**Basic Repository Context:**
-```python
-from gh_wrapper.core.executor import GHExecutor
-from gh_wrapper.features.repo_context import RepoContextAnalyzer
+Detailed usage guides are available for both CLI and Library users:
 
-# Initialize executor with target repository
-executor = GHExecutor(repo="owner/repo")
-
-# Gather high-level context
-analyzer = RepoContextAnalyzer(executor)
-context = analyzer.analyze_current_context()
-
-print(f"Repository: {context.get('target')}")
-print(f"Default Branch: {context.get('metadata', {}).get('default_branch')}")
-print(f"Files found: {len(context.get('structure', []))}")
-print(f"Recent Commits: {len(context.get('activity', {}).get('recent_commits', []))}")
-```
-
-**Tracing Code Features:**
-```python
-from gh_wrapper.features.feature_tracer import FeatureTracer
-
-tracer = FeatureTracer(executor)
-# Search for 'auth' logic across main and develop branches
-results = tracer.trace_code("auth", branches=["main", "develop"])
-```
-
-**Branch Activity Analytics:**
-```python
-from gh_wrapper.features.branch_analytics import BranchAnalyzer
-
-analyzer = BranchAnalyzer(executor)
-stats = analyzer.analyze_branch("main")
-
-print(f"Branch: {stats.branch}")
-print(f"Total Commits: {stats.total_commits}")
-print(f"Top Contributor: {max(stats.contributors, key=stats.contributors.get)}")
-```
-
-**User Activity Analytics:**
-```python
-from gh_wrapper.features.user_tracer import UserTracer
-
-tracer = UserTracer(executor)
-# Trace recent work for a user within a specific repository
-recent_work = tracer.trace_recent_work("MohamedHamed19m", "owner/repo")
-
-for commit in recent_work:
-    print(f"- {commit['sha']}: {commit['message']} ({commit['branch']})")
-```
-
-**Reading File Content:**
-```python
-from gh_wrapper.commands.files import FileManager
-
-file_manager = FileManager(executor)
-content = file_manager.get_file_content("pyproject.toml")
-print(content)
-```
-
-### 🎨 Visual Demos
-The project includes several specialized scripts in the `scripts/` directory to demonstrate core features with rich, interactive terminal output. These require the `fancy` extra:
-
-```bash
-# Install with fancy extras for rich output
-uv sync --extra fancy
-
-# Run the demos
-uv run scripts/demo_read_repo_context.py
-uv run scripts/demo_trace_user_activity.py
-uv run scripts/demo_read_commit.py
-uv run scripts/demo_read_file.py
-```
+- **[💻 CLI Usage Guide](docs/cli_usage_example.md):** How to use the `gh-bridge` command-line interface.
+- **[🐍 Python API Guide](docs/lib_usage_example.md):** How to integrate `gh-bridge` into your Python projects.
+- **[🎨 Visual Demos](docs/lib_usage_example.md#visual-demos):** Run interactive demo scripts from the `scripts/` directory.
 
 ## 🏗️ Project Structure
 
 ```
 src/gh_wrapper/
-├── core/           # Core framework (Executor, Cache, Exceptions)
-├── commands/       # API Wrappers (Commits, PRs, Files, Users)
-└── features/       # High-level logic (Feature Tracer, Repo Context)
+├── cli/            # CLI implementation (Typer)
+├── core/           # Core framework (Executor, Cache)
+├── commands/       # Low-level API Wrappers
+├── features/       # High-level logic (Tracer, Analytics)
+└── models/         # Pydantic data models
 ```
 
 ## 🧪 Testing
 
 ```bash
-# Run unit tests
-uv run pytest tests/unit
-
-# Run integration tests (requires GH_TOKEN)
-export RUN_INTEGRATION_TESTS=1
-uv run pytest tests/integration
+# Run all tests (requires authenticated gh CLI)
+$env:RUN_INTEGRATION_TESTS='1'; uv run pytest
 ```
 
 ## 🤝 Contributing

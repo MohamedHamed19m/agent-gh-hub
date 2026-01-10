@@ -40,7 +40,7 @@ class GHExecutor:
             raise GHCommandError("GitHub CLI version check timed out")
 
     def execute(
-        self, command: List[str], parse_json: bool = False, timeout: int = 60
+        self, command: List[str], parse_json: bool = False, timeout: int = 180
     ) -> Union[str, Dict[str, Any], List[Any]]:
         """Execute a gh command and return output"""
         # Build full command

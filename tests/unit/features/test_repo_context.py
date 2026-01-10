@@ -105,11 +105,11 @@ def test_get_summarized_activity(analyzer: RepoContextAnalyzer) -> None:
         activity = analyzer._get_summarized_activity("main")
 
         assert len(activity["recent_commits"]) == 1
-        assert activity["recent_commits"][0]["sha"] == "sha1234"
-        assert activity["recent_commits"][0]["is_merge"] is True
+        assert activity["recent_commits"][0].sha == "sha123456"
+        assert activity["recent_commits"][0].is_merge is True
 
         assert len(activity["open_pull_requests"]) == 1
-        assert activity["open_pull_requests"][0]["status"] == "Draft"
+        assert activity["open_pull_requests"][0].status == "Draft"
         assert activity["stats"]["commits_last_7d"] == 1
 
 

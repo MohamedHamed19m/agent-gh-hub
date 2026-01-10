@@ -1,10 +1,11 @@
 import concurrent.futures
-from typing import Dict, List, Optional
+from typing import List, Optional
 
 from ..commands.commits import CommitsManager
 from ..commands.repository import RepoManager
 from ..commands.users import UserManager
 from ..core.executor import GHExecutor
+from ..models.trace import TraceCommit
 
 
 class UserTracer:
@@ -22,7 +23,7 @@ class UserTracer:
         branch_scan_limit: int = 10,
         commit_depth_per_branch: int = 100,
         branch: Optional[str] = None,
-    ) -> List[Dict]:
+    ) -> List[TraceCommit]:
         """
         Traces recent work for a user within a given repository by analyzing
         their recent commits across branches and falling back to global
@@ -51,16 +52,29 @@ class UserTracer:
                 f"No commits found for user {username} in the repository "
                 "branches. Falling back to global search."
             )
-            user_commits = self.commits_manager.get_user_commits_global_search(
+            raw_global = self.commits_manager.get_user_commits_global_search(
                 repo, username, limit
             )
+            # Convert raw global search results to TraceCommit
+            user_commits = []
+            for c in raw_global:
+                user_commits.append(
+                    TraceCommit(
+                        sha=c.get("sha", ""),
+                        message=c.get("message", ""),
+                        author=username,
+                        date=c.get("date", ""),
+                        branch="unknown (global search)",
+                        is_merge=False,
+                    )
+                )
 
         # [4]. Limit results
         return user_commits[:limit]
 
     def find_user_commits_in_branches_parallel(
         self, username: str, branches: List[dict], limit_per_branch: int
-    ) -> List[Dict]:
+    ) -> List[TraceCommit]:
         """Find user commits across multiple branches in parallel"""
         results = {}
         with concurrent.futures.ThreadPoolExecutor(
@@ -80,17 +94,22 @@ class UserTracer:
                 branch = future_to_branch[future]
                 try:
                     branch_commits = future.result()
-                    for commit in branch_commits:
-                        commit["priority"] = branch.get("is_priority", False)
-
                     for c in branch_commits:
-                        if c["sha_full"] not in results:
-                            results[c["sha_full"]] = c
+                        sha = c.get("sha_full")
+                        if sha and sha not in results:
+                            results[sha] = TraceCommit(
+                                sha=sha,
+                                message=c.get("message", ""),
+                                author=username,
+                                date=c.get("date", ""),
+                                branch=branch["name"],
+                                is_merge=c.get("is_merge", False),
+                            )
                 except Exception as e:
                     # in a real logging scenario, log the exception
                     print(f"Error fetching commits for branch {branch['name']}: {e}")
 
         final_list = list(results.values())
         # sort by date in descending order
-        final_list.sort(key=lambda x: x.get("date", ""), reverse=True)
+        final_list.sort(key=lambda x: x.date, reverse=True)
         return final_list

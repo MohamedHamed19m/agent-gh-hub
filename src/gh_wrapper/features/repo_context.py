@@ -7,6 +7,14 @@ from ..commands.files import FileManager
 from ..commands.pull_requests import PRManager
 from ..commands.repository import RepoManager
 from ..core.executor import GHExecutor
+from ..models.analysis import (
+    RepoContextActivity,
+    RepoContextMetadata,
+    RepoContextReport,
+    RepoContextStats,
+    RepoContextStructureItem,
+)
+from ..models.trace import TraceCommit, TracePR
 
 logger = logging.getLogger(__name__)
 
@@ -17,7 +25,7 @@ class RepoContextAnalyzer:
 
     Composes RepoManager, PRManager, and FileManager to aggregate
     metadata, file structure, activity, and documentation into a
-    single context dictionary.
+    single RepoContextReport model.
     """
 
     PRIORITY_WHITELIST = [
@@ -54,7 +62,9 @@ class RepoContextAnalyzer:
         self.file_manager = FileManager(executor)
         self.commits_manager = CommitsManager(executor)
 
-    def analyze_current_context(self, branch: Optional[str] = None) -> Dict[str, Any]:
+    def analyze_current_context(
+        self, branch: Optional[str] = None
+    ) -> RepoContextReport:
         """
         Generate a comprehensive snapshot of the repository state.
 
@@ -62,28 +72,46 @@ class RepoContextAnalyzer:
             branch: Optional branch name. Defaults to repository default branch.
 
         Returns:
-            A dictionary containing metadata, structure, activity, and readme.
+            A RepoContextReport model containing metadata, structure,
+            activity, and readme.
         """
         # Phase 1: Metadata
-        metadata = self.repo_manager.get_repo_basics()
-        default_branch = branch or metadata.get("default_branch", "main")
+        raw_metadata = self.repo_manager.get_repo_basics()
+        default_branch = branch or raw_metadata.get("default_branch", "main")
+
+        metadata = RepoContextMetadata(
+            default_branch=raw_metadata.get("default_branch", "main"),
+            description=raw_metadata.get("description"),
+            latest_release=raw_metadata.get("latest_release"),
+            stars=raw_metadata.get("stargazers_count", 0),
+            forks=raw_metadata.get("forks_count", 0),
+            is_fork=raw_metadata.get("fork", False),
+            is_archived=raw_metadata.get("archived", False),
+            topics=raw_metadata.get("topics", []),
+        )
 
         # Phase 2: Structure
-        structure = self._get_smart_structure(default_branch)
+        raw_structure = self._get_smart_structure(default_branch)
+        structure = [RepoContextStructureItem(**item) for item in raw_structure]
 
         # Phase 3: Activity
-        activity = self._get_summarized_activity(default_branch)
+        raw_activity = self._get_summarized_activity(default_branch)
+        activity = RepoContextActivity(
+            recent_commits=raw_activity["recent_commits"],
+            open_pull_requests=raw_activity["open_pull_requests"],
+            stats=RepoContextStats(**raw_activity["stats"]),
+        )
 
         # Phase 4: Readme
         readme_snippet = self._get_readme_snippet(default_branch)
 
-        return {
-            "target": self.executor.repo or "local",
-            "metadata": metadata,
-            "structure": structure,
-            "activity": activity,
-            "readme_snippet": readme_snippet,
-        }
+        return RepoContextReport(
+            target=self.executor.repo or "local",
+            metadata=metadata,
+            structure=structure,
+            activity=activity,
+            readme_snippet=readme_snippet,
+        )
 
     def _get_readme_snippet(self, branch: str, limit: int = 2000) -> Optional[str]:
         """
@@ -113,14 +141,14 @@ class RepoContextAnalyzer:
         summarized_commits = []
         for c in raw_commits:
             summarized_commits.append(
-                {
-                    "sha": c.get("sha", "")[:7],
-                    "message": c.get("commit", {}).get("message", "").split("\n")[0],
-                    "author": c.get("commit", {}).get("author", {}).get("name"),
-                    "date": c.get("commit", {}).get("author", {}).get("date"),
-                    "branch": branch,
-                    "is_merge": len(c.get("parents", [])) > 1,
-                }
+                TraceCommit(
+                    sha=c.get("sha", ""),
+                    message=c.get("commit", {}).get("message", "").split("\n")[0],
+                    author=c.get("commit", {}).get("author", {}).get("name"),
+                    date=c.get("commit", {}).get("author", {}).get("date"),
+                    branch=branch,
+                    is_merge=len(c.get("parents", [])) > 1,
+                )
             )
 
         # 2. PRs
@@ -133,17 +161,17 @@ class RepoContextAnalyzer:
                 status = "Draft"
 
             summarized_prs.append(
-                {
-                    "number": pr.get("number"),
-                    "title": pr.get("title"),
-                    "author": pr.get("author", {}).get("login"),
-                    "status": status,
-                    "created_at": pr.get("createdAt"),
-                    "labels": [t.get("name") for t in pr.get("labels", [])]
+                TracePR(
+                    number=int(pr.get("number", 0)),
+                    title=str(pr.get("title", "Untitled")),
+                    author=pr.get("author", {}).get("login", "Unknown"),
+                    status=status,
+                    created_at=str(pr.get("createdAt", "")),
+                    labels=[t.get("name") for t in pr.get("labels", [])]
                     if isinstance(pr.get("labels"), list)
                     else [],
-                    "draft": pr.get("draft", False),
-                }
+                    draft=pr.get("draft", False),
+                )
             )
 
         # 3. Stats (Last 7 days)
