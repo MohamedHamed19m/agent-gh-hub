@@ -1,28 +1,47 @@
 # 🌉 gh-bridge
 
-A robust, Pythonic wrapper around the **GitHub CLI (`gh`)**, engineered specifically for **AI Agents** (like Claude, Gemini, and GPT) and high-automation environments.
+**gh-bridge** is a high-performance Python library and CLI tool that acts as a robust wrapper around the **GitHub CLI (`gh`)**. Engineered specifically for **AI Agents** (like Claude, Gemini, and GPT) and high-automation environments, it provides a seamless way to access GitHub data in enterprise settings where direct Personal Access Token usage is restricted by **SAML/SSO** policies.
+
+By leveraging your local authenticated GitHub CLI session, `gh-bridge` enables automated code analysis, repository tracing, and PR management without complex credential handling. It transforms raw CLI output into **AI-native structured data (JSON/TOON)**, perfectly optimized for LLM context windows.
+
+---
 
 [![Tests](https://github.com/MohamedHamed19m/agent-gh-hub/actions/workflows/test.yml/badge.svg)](https://github.com/MohamedHamed19m/agent-gh-hub/actions/workflows/test.yml)
 [![Python Version](https://img.shields.io/badge/python-3.10%2B-blue)](https://python.org)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Managed by uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
 
-![gh-bridge Architecture](docs/package_image.png)
+![Architecture diagram of gh-bridge AI Agent workflow showing Python-to-GitHub CLI integration](docs/package_image.png)
+
+---
+
+## 📋 Table of Contents
+
+- [🎯 Why gh-bridge?](#-why-gh-bridge)
+- [🛠️ Key Features](#️-key-features)
+- [🚀 Quick Start](#-quick-start)
+- [📖 Documentation](#-documentation)
+- [🏗️ Project Structure](#️-project-structure)
+- [🧪 Testing](#-testing)
+- [🤝 Contributing](#-contributing)
+
+---
 
 ## 🎯 Why gh-bridge?
 
-In many **Enterprise environments**, security policies often restrict Personal Access Tokens. `gh-bridge` solves this by acting as a **Pythonic wrapper for the GitHub CLI (`gh`)**, leveraging your existing authenticated CLI session to navigate SAML/SSO requirements seamlessly.
+In many **Enterprise environments**, security policies restrict Personal Access Tokens. `gh-bridge` solves this by acting as a **Pythonic bridge**, inheriting your browser-based SSO session seamlessly.
 
-- **SAML/SSO Compatibility:** Inherits your browser-based SSO session.
+- **SAML/SSO Compatibility:** Works anywhere the `gh` CLI is authenticated.
 - **Zero Credential Management:** Uses the local system's secure credential store.
-- **AI-Native Output:** Parses CLI output into structured JSON/TOON for LLM context windows.
+- **AI-Native Output:** Parses CLI output into structured Pydantic models for automated agents.
 
 ## 🛠️ Key Features
 
-- **📊 Branch Analytics:** Analyze activity and health metrics.
-- **🔍 Feature Tracer:** Search logic across multiple repositories.
-- **🤖 PR Review:** Automated review suggestions and summaries.
-- **👤 User Activity:** Trace a developer's recent progress and intent.
-- **📂 Repo Contextualizer:** "Big Picture" view for AI agents.
+- **📊 Branch Analytics:** Detailed activity, health metrics, and contributor stats.
+- **🔍 Feature Tracer:** Multi-repo search for logic, keywords, or code snippets.
+- **🤖 PR Review:** Automated review suggestions and impact summaries.
+- **👤 User Activity:** Trace developer progress and intent across branches.
+- **📂 Repo Contextualizer:** Unified "Big Picture" view for LLM context gathering.
 
 ## 🚀 Quick Start
 
@@ -39,11 +58,11 @@ uv sync --all-extras
 
 ## 📖 Documentation
 
-Detailed usage guides are available for both CLI and Library users:
+Explore detailed guides for your specific use case:
 
-- **[💻 CLI Usage Guide](docs/cli_usage_example.md):** How to use the `gh-bridge` command-line interface.
-- **[🐍 Python API Guide](docs/lib_usage_example.md):** How to integrate `gh-bridge` into your Python projects.
-- **[🎨 Visual Demos](docs/lib_usage_example.md#visual-demos):** Run interactive demo scripts from the `scripts/` directory.
+- **[💻 CLI Usage Guide](docs/cli_usage_example.md):** Master the `gh-bridge` command-line tool.
+- **[🐍 Python API Guide](docs/lib_usage_example.md):** Deep integration into your Python automation.
+- **[🎨 Visual Demos](docs/lib_usage_example.md#visual-demos):** Run interactive scripts from the `scripts/` directory.
 
 ## 🏗️ Project Structure
 
@@ -66,4 +85,4 @@ $env:RUN_INTEGRATION_TESTS='1'; uv run pytest
 ## 🤝 Contributing
 Contributions are welcome! Please ensure all PRs pass the ruff linting and mypy type checks.
 
-Created by MohamedHamed19m
+Created by **MohamedHamed19m**

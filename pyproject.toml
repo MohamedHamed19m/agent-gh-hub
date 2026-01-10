@@ -1,5 +1,5 @@
 [project]
-name = "gh-wrapper"
+name = "gh-bridge"
 version = "0.1.0"
 description = "A Pythonic wrapper around the GitHub CLI (gh), optimized for AI agents and automation"
 readme = "README.md"
