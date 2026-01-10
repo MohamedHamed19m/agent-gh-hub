@@ -1,6 +1,6 @@
 import logging
 from datetime import datetime, timedelta
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from ..commands.commits import CommitsManager
 from ..commands.files import FileManager
@@ -62,18 +62,9 @@ class RepoContextAnalyzer:
         self.file_manager = FileManager(executor)
         self.commits_manager = CommitsManager(executor)
 
-    def analyze_current_context(
-        self, branch: Optional[str] = None
-    ) -> RepoContextReport:
+    def analyze_current_context(self, branch: str | None = None) -> RepoContextReport:
         """
         Generate a comprehensive snapshot of the repository state.
-
-        Args:
-            branch: Optional branch name. Defaults to repository default branch.
-
-        Returns:
-            A RepoContextReport model containing metadata, structure,
-            activity, and readme.
         """
         # Phase 1: Metadata
         raw_metadata = self.repo_manager.get_repo_basics()
@@ -95,11 +86,11 @@ class RepoContextAnalyzer:
         structure = [RepoContextStructureItem(**item) for item in raw_structure]
 
         # Phase 3: Activity
-        raw_activity = self._get_summarized_activity(default_branch)
+        activity_data = self._get_summarized_activity(default_branch)
         activity = RepoContextActivity(
-            recent_commits=raw_activity["recent_commits"],
-            open_pull_requests=raw_activity["open_pull_requests"],
-            stats=RepoContextStats(**raw_activity["stats"]),
+            recent_commits=activity_data["recent_commits"],
+            open_pull_requests=activity_data["open_pull_requests"],
+            stats=RepoContextStats(**activity_data["stats"]),
         )
 
         # Phase 4: Readme
@@ -113,7 +104,7 @@ class RepoContextAnalyzer:
             readme_snippet=readme_snippet,
         )
 
-    def _get_readme_snippet(self, branch: str, limit: int = 2000) -> Optional[str]:
+    def _get_readme_snippet(self, branch: str, limit: int = 2000) -> str | None:
         """
         Fetch and truncate README.md.
         """
@@ -121,45 +112,42 @@ class RepoContextAnalyzer:
         if not content:
             return None
 
-        # Strip excessive whitespace but preserve markdown
+        # Normalize whitespace
         import re
 
         content = re.sub(r"\n{3,}", "\n\n", content).strip()
 
-        if len(content) > limit:
-            return content[:limit] + "\n\n...[truncated]"
-        return content
+        return (
+            (content[:limit] + "\n\n...[truncated]")
+            if len(content) > limit
+            else content
+        )
 
-    def _get_summarized_activity(self, branch: str) -> Dict[str, Any]:
+    def _get_summarized_activity(self, branch: str) -> dict[str, Any]:
         """
         Fetch and format recent commits, PRs, and aggregate stats.
         """
-        # 1. Commits
+        # 1. Fetch recent commits (limit 10)
         raw_commits = self.commits_manager.get_commits_for_analysis(
             branch=branch, limit=10
         )
-        summarized_commits = []
-        for c in raw_commits:
-            summarized_commits.append(
-                TraceCommit(
-                    sha=c.get("sha", ""),
-                    message=c.get("commit", {}).get("message", "").split("\n")[0],
-                    author=c.get("commit", {}).get("author", {}).get("name"),
-                    date=c.get("commit", {}).get("author", {}).get("date"),
-                    branch=branch,
-                    is_merge=len(c.get("parents", [])) > 1,
-                )
+        summarized_commits = [
+            TraceCommit(
+                sha=c.get("sha", ""),
+                message=c.get("commit", {}).get("message", "").split("\n")[0],
+                author=c.get("commit", {}).get("author", {}).get("name", "Unknown"),
+                date=c.get("commit", {}).get("author", {}).get("date", ""),
+                branch=branch,
+                is_merge=len(c.get("parents", [])) > 1,
             )
+            for c in raw_commits
+        ]
 
-        # 2. PRs
+        # 2. Fetch open PRs (limit 10)
         raw_prs = self.pr_manager.list_prs(state="open", limit=10)
         summarized_prs = []
         for pr in raw_prs:
-            # Simple status inference
-            status = "Open"
-            if pr.get("draft"):
-                status = "Draft"
-
+            status = "Draft" if pr.get("draft") else "Open"
             summarized_prs.append(
                 TracePR(
                     number=int(pr.get("number", 0)),
@@ -170,35 +158,33 @@ class RepoContextAnalyzer:
                     labels=[t.get("name") for t in pr.get("labels", [])]
                     if isinstance(pr.get("labels"), list)
                     else [],
-                    draft=pr.get("draft", False),
+                    draft=bool(pr.get("draft")),
                 )
             )
 
-        # 3. Stats (Last 7 days)
+        # 3. Calculate 7-day stats
         seven_days_ago = (datetime.now() - timedelta(days=7)).isoformat()
-
-        # We'll use get_commits_for_analysis with 'since' for stats
         recent_for_stats = self.commits_manager.get_commits_for_analysis(
             branch=branch, since=seven_days_ago, limit=100
         )
 
-        active_authors = set()
-        for c in recent_for_stats:
-            active_authors.add(c.get("commit", {}).get("author", {}).get("email"))
+        active_contributors = {
+            c.get("commit", {}).get("author", {}).get("email") for c in recent_for_stats
+        }
 
         return {
             "recent_commits": summarized_commits,
             "open_pull_requests": summarized_prs,
             "stats": {
                 "commits_last_7d": len(recent_for_stats),
-                "open_prs_count": len(raw_prs),  # Approximate for now
-                "active_contributors_last_7d": len(active_authors),
+                "open_prs_count": len(raw_prs),
+                "active_contributors_last_7d": len(active_contributors),
             },
         }
 
     def _get_smart_structure(
         self, branch: str, max_depth: int = 2, max_per_level: int = 20
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """
         Get file structure with smart truncation and priority preservation.
         """
