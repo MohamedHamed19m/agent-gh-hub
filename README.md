@@ -49,7 +49,34 @@ cd gh-bridge
 uv sync --all-extras
 ```
 
-### Usage
+## 💻 CLI Usage
+
+`gh-bridge` provides a powerful CLI interface designed for both AI agents (default) and humans (`--readable`).
+
+### Agent Mode (Default)
+Optimized for token efficiency using **TOON** and **Markdown**.
+```bash
+# Repository scan (TOON)
+gh-bridge scan owner/repo
+
+# Feature trace (TOON)
+gh-bridge trace "authentication" --repos "owner/repo1,owner/repo2"
+
+# Branch analysis (TOON)
+gh-bridge analyze-branch owner/repo main
+
+# PR Review (Markdown)
+gh-bridge review-pr owner/repo 123
+```
+
+### Human Mode (`--readable`)
+Formatted with **Rich** tables, panels, and colors.
+```bash
+gh-bridge scan owner/repo --readable
+gh-bridge analyze-branch owner/repo main --readable
+```
+
+### Usage (Python API)
 
 **Basic Repository Context:**
 ```python
