@@ -56,17 +56,15 @@ def trace_user_activity(repo_name: str, limit: int = 10) -> None:
             timeline = Tree("[bold magenta]Activity Timeline")
 
             for commit in recent_work:
-                display_date = (
-                    commit.get("date", "")[:10]
-                    if commit.get("date")
-                    else "unknown date"
-                )
-                sha = commit.get("sha", "N/A")[:7]
-                msg = commit.get("message", "No message")
-                branch = commit.get("branch", "unknown")
+                display_date = commit.date[:10] if commit.date else "unknown date"
+                sha = commit.sha[:7] if commit.sha else "N/A"
+                msg = commit.message or "No message"
+                branch = commit.branch or "unknown"
 
                 # Highlight priority work if your tracer supports it
-                color = "green" if commit.get("priority") else "white"
+                # Note: 'priority' was removed from TraceCommit model,
+                # using False as default or we can check branch
+                color = "white"
 
                 # Add a node for each event
                 event_node = timeline.add(
@@ -78,9 +76,7 @@ def trace_user_activity(repo_name: str, limit: int = 10) -> None:
             console.print(timeline)
 
             # 3. Summary Statistics
-            unique_branches = set(
-                c.get("branch") for c in recent_work if c.get("branch")
-            )
+            unique_branches = set(c.branch for c in recent_work if c.branch)
             console.print(
                 f"\n[bold]Summary:[/ ] User worked across "
                 f"[bold cyan]{len(unique_branches)}[/] branches."

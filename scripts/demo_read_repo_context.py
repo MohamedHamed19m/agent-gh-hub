@@ -25,19 +25,19 @@ def read_repo_context(repo_name: str) -> None:
         return
 
     # 1. Header & Metadata Section
-    metadata = context.get("metadata", {})
+    metadata = context.metadata
     meta_table = Table(show_header=False, box=box.SIMPLE)
-    meta_table.add_row("[bold cyan]Default Branch:", metadata.get("default_branch"))
+    meta_table.add_row("[bold cyan]Default Branch:", metadata.default_branch)
     meta_table.add_row(
-        "[bold cyan]Latest Release:", str(metadata.get("latest_release") or "None")
+        "[bold cyan]Latest Release:", str(metadata.latest_release or "None")
     )
     meta_table.add_row(
         "[bold cyan]Stars/Forks:",
-        f"⭐ {metadata.get('stars', 0)} / 🍴 {metadata.get('forks', 0)}",
+        f"⭐ {metadata.stars} / 🍴 {metadata.forks}",
     )
-    meta_table.add_row("[bold cyan]Description:", metadata.get("description", "N/A"))
+    meta_table.add_row("[bold cyan]Description:", metadata.description or "N/A")
 
-    topics = ", ".join(metadata.get("topics", []))
+    topics = ", ".join(metadata.topics)
     if topics:
         meta_table.add_row("[bold cyan]Topics:", f"[yellow]{topics}[/]")
 
@@ -48,38 +48,32 @@ def read_repo_context(repo_name: str) -> None:
     )
 
     # 2. File Structure (Tree View)
-    structure_tree = Tree(f"[bold blue]📂 {context.get('target')}")
-    structure = context.get("structure", [])
+    structure_tree = Tree(f"[bold blue]📂 {context.target}")
+    structure = context.structure
     for item in structure:
-        if item.get("type") == "truncated":
-            structure_tree.add(
-                f"[dim]... {item.get('count')} more items in {item.get('path')}[/]"
-            )
+        if item.type == "truncated":
+            structure_tree.add(f"[dim]... {item.count} more items in {item.path}[/]")
             continue
 
-        icon = "📄" if item.get("type") == "file" else "📁"
-        priority_marker = "[bold green]! [/]" if item.get("priority") else ""
-        structure_tree.add(f"{priority_marker}{icon} {item.get('path')}")
+        icon = "📄" if item.type == "file" else "📁"
+        priority_marker = "[bold green]! [/]" if item.priority else ""
+        structure_tree.add(f"{priority_marker}{icon} {item.path}")
 
     # 3. Activity Section (Commits & PRs)
-    activity = context.get("activity", {})
-    stats = activity.get("stats", {})
+    activity = context.activity
+    stats = activity.stats
 
     # Commits List
-    commit_list = (
-        f"[bold white]Last 7 Days:[/] {stats.get('commits_last_7d', 0)} commits\n\n"
-    )
-    for commit in activity.get("recent_commits", [])[:5]:
-        merge_marker = " 🔀" if commit.get("is_merge") else ""
-        commit_list += (
-            f"• [blue]{commit.get('sha')}[/] {commit.get('message')}{merge_marker}\n"
-        )
+    commit_list = f"[bold white]Last 7 Days:[/] {stats.commits_last_7d} commits\n\n"
+    for commit in activity.recent_commits[:5]:
+        merge_marker = " 🔀" if commit.is_merge else ""
+        commit_list += f"• [blue]{commit.sha[:7]}[/] {commit.message}{merge_marker}\n"
 
     # PRs List
-    pr_list = f"[bold white]Open PRs:[/] {stats.get('open_prs_count', 0)}\n\n"
-    for pr in activity.get("open_pull_requests", [])[:5]:
-        status_color = "green" if pr.get("status") == "Open" else "yellow"
-        pr_list += f"• [bold {status_color}]#{pr.get('number')}[/] {pr.get('title')}\n"
+    pr_list = f"[bold white]Open PRs:[/] {stats.open_prs_count}\n\n"
+    for pr in activity.open_pull_requests[:5]:
+        status_color = "green" if pr.status == "Open" else "yellow"
+        pr_list += f"• [bold {status_color}]#{pr.number}[/] {pr.title}\n"
 
     # Layout with Columns
     activity_panel = Panel(
@@ -91,7 +85,7 @@ def read_repo_context(repo_name: str) -> None:
     console.print(Columns([structure_tree, activity_panel]))
 
     # 4. README Snippet
-    readme = context.get("readme_snippet")
+    readme = context.readme_snippet
     if readme:
         console.print(
             Panel(
