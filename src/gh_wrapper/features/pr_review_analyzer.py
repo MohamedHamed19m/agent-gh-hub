@@ -1,5 +1,5 @@
 import re
-from typing import Dict, List
+from typing import Dict, List, Literal, cast
 
 from gh_wrapper.commands.pull_requests import PRManager
 from gh_wrapper.models.pr_review import (
@@ -59,7 +59,11 @@ class PrReviewAnalyzer:
                 if current_file_path and current_file_status:
                     summary_data.modified_files.append(
                         FileModification(
-                            file_path=current_file_path, status=current_file_status
+                            file_path=current_file_path,
+                            status=cast(
+                                Literal["added", "removed", "modified"],
+                                current_file_status,
+                            ),
                         )
                     )
                     metrics_data["files_changed"] += 1
@@ -90,7 +94,10 @@ class PrReviewAnalyzer:
         if current_file_path and current_file_status:
             summary_data.modified_files.append(
                 FileModification(
-                    file_path=current_file_path, status=current_file_status
+                    file_path=current_file_path,
+                    status=cast(
+                        Literal["added", "removed", "modified"], current_file_status
+                    ),
                 )
             )
             metrics_data["files_changed"] += 1

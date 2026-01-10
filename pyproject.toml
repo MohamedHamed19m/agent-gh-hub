@@ -102,7 +102,15 @@ indent-style = "space"
 
 [tool.mypy]
 mypy_path = "src"
+plugins = [
+  "pydantic.mypy"
+]
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = true
 ignore_missing_imports = true
+
+[tool.pydantic-mypy]
+init_forbid_extra = true
+init_typed = true
+warn_required_dynamic_aliases = true
