@@ -41,7 +41,9 @@ def handle_trace_user(username: str, repo: str, readable: bool = False) -> None:
         sys.exit(1)
 
 
-def render_rich_user_trace(username: str, repo: str, activity: List[TraceCommit]) -> None:
+def render_rich_user_trace(
+    username: str, repo: str, activity: List[TraceCommit]
+) -> None:
     """
     Render user activity results using Rich for humans.
     """

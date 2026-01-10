@@ -4,7 +4,7 @@ Agent B: Implementation of TOON and Rich output.
 """
 
 import sys
-from typing import Any, Dict, Optional
+from typing import Optional
 
 import typer
 from rich.console import Console
@@ -85,7 +85,5 @@ def render_rich_scan(report: RepoContextReport) -> None:
     stats_table.add_column("Value", style="green")
     stats_table.add_row("Commits", str(stats.commits_last_7d))
     stats_table.add_row("Open PRs", str(stats.open_prs_count))
-    stats_table.add_row(
-        "Active Contributors", str(stats.active_contributors_last_7d)
-    )
+    stats_table.add_row("Active Contributors", str(stats.active_contributors_last_7d))
     console.print(stats_table)

@@ -1,5 +1,5 @@
 import concurrent.futures
-from typing import Dict, List, Optional
+from typing import List, Optional
 
 from ..commands.commits import CommitsManager
 from ..commands.repository import RepoManager

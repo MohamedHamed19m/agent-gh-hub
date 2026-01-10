@@ -56,7 +56,9 @@ class RepoContextAnalyzer:
         self.file_manager = FileManager(executor)
         self.commits_manager = CommitsManager(executor)
 
-    def analyze_current_context(self, branch: Optional[str] = None) -> RepoContextReport:
+    def analyze_current_context(
+        self, branch: Optional[str] = None
+    ) -> RepoContextReport:
         """
         Generate a comprehensive snapshot of the repository state.
 
@@ -64,7 +66,8 @@ class RepoContextAnalyzer:
             branch: Optional branch name. Defaults to repository default branch.
 
         Returns:
-            A RepoContextReport model containing metadata, structure, activity, and readme.
+            A RepoContextReport model containing metadata, structure,
+            activity, and readme.
         """
         # Phase 1: Metadata
         metadata = self.repo_manager.get_repo_basics()
