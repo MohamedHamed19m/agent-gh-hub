@@ -51,11 +51,12 @@ def get_commit_details_from_repo(repo_name: str) -> None:
     author_info = commit_info.get("author", {})
 
     # 2. Header Panel
+    msg = commit_info.get("message")
     header_content = (
         f"[bold cyan]SHA:[/ ] {commit_details.get('sha')}\n"
         f"[bold cyan]Author:[/ ] {author_info.get('name')}\n"
         f"[bold cyan]Date:[/ ] {author_info.get('date')}\n"
-        f"[bold cyan]Message:[/ ] [italic white]{commit_info.get('message')}[/imply]"
+        f"[bold cyan]Message:[/ ] [italic white]{msg}[/italic white]"
     )
     console.print(
         Panel(
